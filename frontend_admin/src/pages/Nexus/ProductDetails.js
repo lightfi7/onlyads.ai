@@ -173,8 +173,8 @@ export default function ProductDetails(props) {
       .then((response) => setStoreTrends(response.data))
       .catch((err) => console.log(err));
     setCompetitionMeter({
-      value: product.productCompetition.chartData.competition_meter,
-      label: product.productCompetition.chartData.label,
+      value: product.productCompetition?.chartData?.competition_meter,
+      label: product.productCompetition?.chartData?.label,
     });
     let topCustomerCountries_ = [];
     for (let i in product.productTopCustomerCountry?.chartData.countries
