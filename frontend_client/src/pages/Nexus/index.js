@@ -59,17 +59,21 @@ export default function Nexus() {
   useEffect(() => {
     if (inited)
       if (location.pathname.includes("nexus-all")) {
-        dispatch(getProducts({ page: 0, field: "nexus" }));
+        setParams_({ page: 0, field: "nexus" });
       } else if (location.pathname.includes("nexus-trending")) {
-        dispatch(getProducts({ page: 0, field: "trend" }));
+        setParams_({ page: 0, field: "trend" });
       } else if (location.pathname.includes("nexus-rise")) {
-        dispatch(getProducts({ page: 0, field: "rise" }));
+        setParams_({ page: 0, field: "rise" });
       } else if (location.pathname.includes("nexus-hot")) {
-        dispatch(getProducts({ page: 0, field: "hot" }));
+        setParams_({ page: 0, field: "hot" });
       } else if (location.pathname.includes("nexus-new")) {
-        dispatch(getProducts({ page: 0, field: "new" }));
+        setParams_({ page: 0, field: "new" });
       }
   }, [dispatch, inited, location.pathname]);
+
+  useEffect(() => {
+    dispatch(setParams({ ...params, ...params_ }));
+  }, [params_]);
 
   useEffect(() => {
     if (inited) dispatch(getProducts({}));
