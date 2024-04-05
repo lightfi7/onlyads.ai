@@ -1,0 +1,144 @@
+const db = require("../models");
+const exec = require("child_process").exec;
+const Setting = db.setting;
+const Status = db.status;
+const fs = require("fs");
+// Database connection details
+const dbOptions = {
+  user: "root",
+  pass: "mari2Ana23sem",
+  host: "localhost",
+  port: 27017,
+  database: "mydatabase",
+  autoBackup: true,
+  removeOldBackup: true,
+  keepLastDaysBackup: 2,
+  autoBackupPath: "./backup/backup.archive", // e.g., /var/database-backup/
+};
+
+exports.setPaypalOption = async (req, res) => {
+  const { apiKey } = req.body;
+
+  Setting.findOne()
+    .then((data) => {
+      if (data) {
+        data.paypal = apiKey;
+        data
+          .save()
+          .then(() => {
+            res.send({
+              message: "ok",
+            });
+          })
+          .catch((err) => {
+            res.status(400).send({
+              code: 500,
+              message: "server error",
+            });
+          });
+      } else {
+        Setting.create({ paypal: apiKey })
+          .then(() => {
+            res.send({
+              message: "ok",
+            });
+          })
+          .catch((err) => {
+            res.status(400).send({
+              code: 500,
+              message: "server error",
+            });
+          });
+      }
+    })
+    .catch((err) => {
+      res.status(400).send({
+        code: 500,
+        message: "server error",
+      });
+    });
+};
+
+exports.getPaypalOption = (req, res) => {
+  Setting.findOne()
+    .then((data) => {
+      res.send({
+        apiKey: data?.paypal,
+      });
+    })
+    .catch((err) => {
+      res.status(400).send({
+        code: 500,
+        message: "server error",
+      });
+    });
+};
+
+exports.setThemeColor = (req, res) => {
+  const { color } = req.body;
+
+  Setting.findOne({})
+    .then((data) => {
+      if (data) {
+        data.color = color;
+        data.save().then(() => {
+          res.send("Success");
+        });
+      } else {
+        Setting.create({ color: color }).then(() => {
+          res.send("Success");
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send("Internal server error");
+    });
+};
+
+exports.getThemeColor = (req, res) => {
+  Setting.findOne({})
+    .then((data) => {
+      res.send({
+        color: data?.color,
+      });
+    })
+    .catch((err) => {
+      res.status(500).send("Internal server error");
+    });
+};
+
+exports.getStatus = (req, res) => {
+  Status.findOne({})
+    .then((data) => {
+      res.send({
+        status: data,
+      });
+    })
+    .catch((err) => {
+      res.status(500).send("Internal server error");
+    });
+};
+
+exports.backup = (req, res) => {
+  let cmd = `mongodump --db=${dbOptions.database} --username=${dbOptions.user} --password=${dbOptions.pass} --authenticationDatabase=admin --archive=./backup/backup.archive`;
+  exec(cmd, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Backup process exited with error: ${error}`);
+      res.status(400).send("Backup process exited with error");
+    } else {
+      const filePath = "./backup/backup.archive"; // Specify the path to the file you want to download
+      const fileName = "backup.archive"; // Specify the name you want the downloaded file to have
+
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename="backup.archive"`
+      );
+      res.setHeader("Content-Type", "application/octet-stream");
+
+      const fileStream = fs.createReadStream(filePath);
+      fileStream.pipe(res);
+
+      console.log("Successfully backed up the database");
+    }
+  });
+};

@@ -1,0 +1,418 @@
+import React, { useEffect } from "react";
+import SearchBar from "./SearchBar";
+import {
+  Alert,
+  AlertTitle,
+  Avatar,
+  Box,
+  Card,
+  CardContent,
+  CardHeader,
+  CircularProgress,
+  Divider,
+  IconButton,
+  Link,
+  Stack,
+  TablePagination,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getStores,
+  loadParams,
+  setParams,
+} from "../../redux/sales/topStoreSlice";
+import ErrorIcon from "@mui/icons-material/Error";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import { useNavigate } from "react-router-dom";
+import ProductList from "./ProductList";
+
+import Chart from "react-apexcharts";
+import { useAuth } from "../../hooks/useAuth";
+
+export default function TopProducts() {
+  const dispatch = useDispatch();
+  const data = useSelector((state) => state.topstores);
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(50);
+  const [open, setOpen] = React.useState(false);
+  const [storeId, setStoreId] = React.useState(0);
+
+  const [data_, setData_] = React.useState([]);
+  const [subPage, setSubPage] = React.useState(0);
+
+  const { user, isLoading } = useAuth();
+  const userStatus = !user?.expired;
+
+  const handleScroll = () => {
+    const { scrollHeight, clientHeight, scrollTop } =
+      document.documentElement;
+    if (scrollHeight - scrollTop < clientHeight +60) {
+      if (subPage * 2 < rowsPerPage) {
+        setSubPage(subPage + 1);
+      }
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [subPage, window]);
+
+  useEffect(() => {
+    setData_(data.stores.slice(0, (subPage + 1) * 2));
+  }, [subPage, data.stores]);
+
+  useEffect(() => {
+    dispatch(loadParams());
+  }, []);
+
+  useEffect(() => {
+    if (data.inited) dispatch(getStores(data.params));
+    setSubPage(0);
+  }, [data.params, data.inited]);
+
+  const handleChangePage = (event, newPage) => {
+    if(!userStatus) return;
+    setPage(newPage);
+    dispatch(setParams({ ...data.params, page: newPage }));
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    if(!userStatus) return;
+    setRowsPerPage(event.target.value);
+    dispatch(setParams({ ...data.params, page_size: event.target.value }));
+    setPage(0);
+  };
+
+  if(isLoading) return <></>
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 4,
+        pt: 2,
+      }}
+    >
+      {!userStatus && (
+        <Box
+          sx={{
+            mb: 4,
+          }}
+        >
+          <Alert severity="info">
+            <AlertTitle>
+              Upgrade your membership to access this feature
+            </AlertTitle>
+            To utilize this feature, we recommend upgrading your membership. You
+            can upgrade your membership <a href="/pricing">here</a>.
+          </Alert>
+        </Box>
+      )}
+
+      <SearchBar disabled={!userStatus} />
+      <Card
+        sx={{
+          boxShadow: "0 0 16px rgba(0, 0, 0, 0.16)",
+        }}
+      >
+        <CardHeader title={"Stores"} />
+        <CardContent>
+          <Stack>
+            <TablePagination
+              component="div"
+              count={data.total}
+              page={data.params.page}
+              onPageChange={handleChangePage}
+              rowsPerPage={rowsPerPage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+            {data.loading ? (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  minHeight: 200,
+                }}
+              >
+                <CircularProgress />
+              </Box>
+            ) : (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 1.2,
+                }}
+              >
+                {data_.map((p) => {
+                  const categories = [];
+                  const series = [];
+                  p.aggregations?.month?.revenue?.map((c) => {
+                    categories.push(c.date);
+                    series.push(c.value.toFixed(0));
+                  });
+                  return (
+                    <Box key={p.id}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          borderRadius: 2,
+                          bgcolor: "#e3f6fb",
+                          p: 1,
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            flex: 1,
+                            display: "flex",
+                            gap: 1,
+                            p: 1,
+                          }}
+                        >
+                          <Avatar src={p.main_image} variant="rounded" />
+                          <Box>
+                            <Typography
+                              variant="subtitle1"
+                              noWrap
+                              sx={{
+                                maxWidth: 300,
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                              }}
+                            >
+                              {p.title}
+                            </Typography>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1,
+                              }}
+                            >
+                              <Link href={`https://${p.custom_domain}`}>
+                                {`${p.custom_domain}`}
+                              </Link>
+                              <Tooltip
+                                color={"gray"}
+                                title={p.custom_domain_search}
+                              >
+                                <ErrorIcon fontSize="small" color="disabled" />
+                              </Tooltip>
+                            </Box>
+                          </Box>
+                        </Box>
+                        <Stack
+                          sx={{
+                            flex: 1,
+                          }}
+                          spacing={1}
+                          divider={<Divider />}
+                          direction={"row"}
+                        >
+                          <Box>
+                            <Typography
+                              variant="h6"
+                              fontSize={14}
+                              color={"gray"}
+                            >
+                              Total Revenue
+                            </Typography>
+                            <Typography variant="h6" fontSize={17}>
+                              ${p.month_revenue?.toFixed(2)}
+                            </Typography>
+                          </Box>
+                          <Box>
+                            <Typography
+                              variant="h6"
+                              fontSize={14}
+                              color={"gray"}
+                            >
+                              Total Sales
+                            </Typography>
+                            <Typography variant="h6" fontSize={17}>
+                              {p.month_sales?.toFixed(0)}
+                            </Typography>
+                          </Box>
+                          <Box>
+                            <Typography
+                              variant="h6"
+                              fontSize={14}
+                              color={"gray"}
+                            >
+                              Tracked By
+                              <Typography
+                                variant="h6"
+                                fontSize={17}
+                                color={"black"}
+                              >
+                                {p.tracked_by || 0} Others
+                              </Typography>
+                            </Typography>
+                          </Box>
+                          <Box>
+                            <Typography
+                              variant="h6"
+                              fontSize={14}
+                              color={"gray"}
+                            >
+                              Products
+                            </Typography>
+                            <Link
+                              href="#"
+                              onClick={() => {
+                                setStoreId(p.internal_shop_id);
+                                setOpen(true);
+                              }}
+                            >
+                              <Typography variant="h6" fontSize={17}>
+                                {p.products_count}
+                              </Typography>
+                            </Link>
+                          </Box>
+                        </Stack>
+                        <Box
+                          sx={{
+                            px: 2,
+                          }}
+                        >
+                          <IconButton
+                            sx={{
+                              bgcolor: "white",
+                            }}
+                            href={`${p.facebook_add_library}`}
+                          >
+                            <FacebookIcon
+                              sx={{
+                                color: "#000",
+                              }}
+                            />
+                          </IconButton>
+                        </Box>
+                      </Box>
+                      <Box sx={{}}>
+                        <Chart
+                          height={400}
+                          options={{
+                            chart: {
+                              type: "line",
+                              zoom: {
+                                enabled: false,
+                              },
+                            },
+                            dataLabels: {
+                              enabled: false,
+                            },
+                            stroke: {
+                              curve: "straight",
+                            },
+                            xaxis: {
+                              categories: categories,
+                            },
+                          }}
+                          series={[
+                            {
+                              name: "",
+                              data: series,
+                            },
+                          ]}
+                          type="line"
+                        />
+                      </Box>
+                      <Divider>Top Best Selling Products</Divider>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          borderRadius: 2,
+                          p: 1,
+                        }}
+                      >
+                        {Object.values(p.best_selling_products?.month).map(
+                          (c) => {
+                            return (
+                              <Box
+                                sx={{
+                                  flex: 1,
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 1,
+                                  p: 1,
+                                }}
+                              >
+                                <Avatar
+                                  src={c.logo}
+                                  variant="rounded"
+                                  sx={{
+                                    width: 68,
+                                    height: 68,
+                                  }}
+                                />
+                                <Box>
+                                  <Typography
+                                    variant="subtitle1"
+                                    noWrap
+                                    sx={{
+                                      maxWidth: 300,
+                                      overflow: "hidden",
+                                      textOverflow: "ellipsis",
+                                    }}
+                                  >
+                                    {c.title}
+                                  </Typography>
+                                  <Box
+                                    sx={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: 1,
+                                    }}
+                                  >
+                                    <Typography variant="h6" fontSize={16}>
+                                      ${c.price}
+                                    </Typography>
+                                    <Divider orientation="vertical" />
+                                    <Box sx={{ display: "flex", gap: 1 }}>
+                                      <Typography
+                                        color={"gray"}
+                                        variant="h6"
+                                        fontSize={14}
+                                      >
+                                        Revenue :{" "}
+                                      </Typography>
+                                      <Typography variant="h6" fontSize={16}>
+                                        ${c.revenue.toFixed(0)}
+                                      </Typography>
+                                    </Box>
+                                  </Box>
+                                </Box>
+                              </Box>
+                            );
+                          }
+                        )}
+                      </Box>
+                    </Box>
+                  );
+                })}
+              </Box>
+            )}
+          </Stack>
+        </CardContent>
+      </Card>
+      <ProductList
+        storeId={storeId}
+        open={open}
+        handleClose={() => setOpen(false)}
+      />
+    </Box>
+  );
+}
