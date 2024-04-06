@@ -21,6 +21,9 @@ import { useAuth } from "../../hooks/useAuth";
 import BillingTabContent from "./BillingTabContent";
 import DBStateTabContent from "./DBStateTabContent";
 import StorageIcon from "@mui/icons-material/Storage";
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import IntercomTabContent from "./IntercomTabContent";
+
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -70,7 +73,7 @@ export default function Setting() {
     setValue(newValue);
   };
 
-  if(isLoading) return <></>
+  if (isLoading) return <></>;
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -94,7 +97,7 @@ export default function Setting() {
             label="Billing & Plans"
             {...a11yProps(2)}
           />
-          {user?.role == "admin" && (
+          {user?.role === "admin" && (
             <Tab
               icon={<PaymentIcon />}
               iconPosition="start"
@@ -102,13 +105,21 @@ export default function Setting() {
               {...a11yProps(3)}
             />
           )}
-
-          {user?.role == "admin" && (
+          {user?.role === "admin" && (
             <Tab
               icon={<StorageIcon />}
               iconPosition="start"
               label="Database"
               {...a11yProps(4)}
+            />
+          )}
+
+          {user?.role === "admin" && (
+            <Tab
+              icon={<PersonOutlineIcon />}
+              iconPosition="start"
+              label="Intercom account"
+              {...a11yProps(5)}
             />
           )}
         </Tabs>
@@ -122,14 +133,19 @@ export default function Setting() {
       <CustomTabPanel value={value} index={2}>
         <BillingTabContent data={user} handleMessage={setMessage} />
       </CustomTabPanel>
-      {user?.role == "admin" && (
+      {user?.role === "admin" && (
         <CustomTabPanel value={value} index={3}>
           <PaypalAccountTabContent apiKey={apiKey} handleMessage={setMessage} />
         </CustomTabPanel>
       )}
-      {user?.role == "admin" && (
+      {user?.role === "admin" && (
         <CustomTabPanel value={value} index={4}>
           <DBStateTabContent handleMessage={setMessage} />
+        </CustomTabPanel>
+      )}
+      {user?.role === "admin" && (
+        <CustomTabPanel value={value} index={5}>
+          <IntercomTabContent />
         </CustomTabPanel>
       )}
       <Snackbar

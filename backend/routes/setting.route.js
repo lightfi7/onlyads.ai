@@ -26,5 +26,11 @@ module.exports = (app) => {
     controller.setPaypalOption
   );
   router.post("/paypal/get", [authJwt.verifyToken], controller.getPaypalOption);
+  router.get("/intercom/get", controller.getIntercomOptions);
+  router.post(
+    "/intercom/save",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    controller.setIntercomOptions
+  );
   app.use("/api/setting", router);
 };

@@ -1,5 +1,4 @@
 import axios from 'axios'
-import router from '../routes';
 
 const Axios = axios.create({
     baseURL: 'https://app.onlyads.ai:5000/',

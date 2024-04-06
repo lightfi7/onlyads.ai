@@ -142,3 +142,21 @@ exports.backup = (req, res) => {
     }
   });
 };
+
+exports.getIntercomOptions = (req, res) => {
+  Setting.findOne({})
+    .then((data) => {
+      res.send(data?.intercom);
+    })
+    .catch((err) => {
+      res.status(500).send("Internal server error");
+    });
+};
+
+exports.setIntercomOptions = (req, res) => {
+  Setting.findOneAndUpdate({}, { intercom: req.body })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => res.status(500).send("Internal server error"));
+};

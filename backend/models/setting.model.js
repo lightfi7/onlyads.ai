@@ -3,6 +3,9 @@ var schema = mongoose.Schema(
   {
     paypal: String,
     color: {},
+    intercom: {
+      
+    }
   },
   { timestamps: true }
 );

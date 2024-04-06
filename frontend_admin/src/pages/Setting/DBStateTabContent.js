@@ -2,11 +2,6 @@ import {
   Badge,
   Box,
   Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Chip,
   CircularProgress,
   Divider,
   Paper,
@@ -15,7 +10,6 @@ import {
 import axios from "../../services/axios";
 import React, { useEffect, useState } from "react";
 import ReportProblemIcon from "@mui/icons-material/ReportProblem";
-import DownloadIcon from "@mui/icons-material/Download";
 import dayjs from "dayjs";
 
 export default function DBStateTabContent() {

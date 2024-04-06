@@ -1,3 +1,4 @@
+import React from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import {
   CssBaseline,
@@ -16,11 +17,13 @@ import { getColor } from "./redux/theme/themeSlice";
 
 function App() {
   const { color, loading } = useSelector((state) => state.theme);
+
   const dispatch = useDispatch();
+
 
   useEffect(() => {
     dispatch(getColor());
-  }, []);
+  }, [dispatch]);
 
   const theme = useMemo(
     () =>
@@ -36,7 +39,11 @@ function App() {
   if (loading)
     return (
       <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1, bgcolor: "rgba(0, 0, 0, 0.1)" }}
+        sx={{
+          color: "#fff",
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          bgcolor: "rgba(0, 0, 0, 0.1)",
+        }}
         open={loading}
       >
         <CircularProgress color="inherit" size={96} />
