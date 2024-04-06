@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Box, Typography, TextField, Button, Divider } from "@mui/material";
 import axios from "../../services/axios";
 
-export default function IntercomTabContent() {
+export default function IntercomTabContent({ handleMessage }) {
   const [data, setData] = useState({});
 
   useEffect(() => {
@@ -115,9 +115,17 @@ export default function IntercomTabContent() {
           axios
             .post("/api/setting/intercom/save", data)
             .then((response) => {
-              console.log(response.data);
+              handleMessage({
+                t: "Success to updated your profile!",
+                s: "success",
+              });
             })
-            .catch((error) => console.log(error));
+            .catch((error) => {
+              handleMessage({
+                t: "Failed to update your profile!",
+                s: "warning",
+              });
+            });
         }}
       >
         Save Setting

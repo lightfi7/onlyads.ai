@@ -21,7 +21,7 @@ import { useAuth } from "../../hooks/useAuth";
 import BillingTabContent from "./BillingTabContent";
 import DBStateTabContent from "./DBStateTabContent";
 import StorageIcon from "@mui/icons-material/Storage";
-import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import IntercomTabContent from "./IntercomTabContent";
 
 function CustomTabPanel(props) {
@@ -145,7 +145,7 @@ export default function Setting() {
       )}
       {user?.role === "admin" && (
         <CustomTabPanel value={value} index={5}>
-          <IntercomTabContent />
+          <IntercomTabContent handleMessage={setMessage} />
         </CustomTabPanel>
       )}
       <Snackbar
