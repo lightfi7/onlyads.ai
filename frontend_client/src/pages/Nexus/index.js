@@ -14,16 +14,12 @@ import SearchBar from "./SearchBar";
 import ProductCard from "./ProductCard";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
-import {
-  getProducts,
-  loadParams,
-  setParams,
-} from "../../redux/nexus/nexusSlice";
+import { getProducts, setParams } from "../../redux/nexus/nexusSlice";
 import ProductDetails from "./ProductDetails";
 import { useAuth } from "../../hooks/useAuth";
 
 export default function Nexus() {
-  const { params, products, inited, total, loading } = useSelector(
+  const { params, products, total, loading } = useSelector(
     (state) => state.nexus
   );
   const dispatch = useDispatch();
@@ -32,9 +28,6 @@ export default function Nexus() {
   const [showProductResearch, setShowProductResearch] = useState(false);
   const { user, isLoading } = useAuth();
   const userStatus = !user?.expired;
-  const [params_, setParams_] = React.useState({
-    page: 1,
-  });
 
   // const handleScroll = useCallback(() => {
   //   const { scrollHeight, clientHeight, scrollTop } = document.documentElement;
@@ -52,31 +45,26 @@ export default function Nexus() {
   // }, [handleScroll]);
 
   const fetchProducts = useCallback(() => {
-    dispatch(getProducts({ ...params, ...params_ }));
-  }, [dispatch, params, params_]);
+    dispatch(getProducts(params));
+  }, [dispatch, params]);
 
   useEffect(() => {
-    dispatch(loadParams());
-  }, [dispatch]);
+    if (location.pathname.includes("nexus-all")) {
+      dispatch(setParams({ page: 0, field: "nexus" }));
+    } else if (location.pathname.includes("nexus-trending")) {
+      dispatch(setParams({ page: 0, field: "trend" }));
+    } else if (location.pathname.includes("nexus-rise")) {
+      dispatch(setParams({ page: 0, field: "rise" }));
+    } else if (location.pathname.includes("nexus-hot")) {
+      dispatch(setParams({ page: 0, field: "hot" }));
+    } else if (location.pathname.includes("nexus-new")) {
+      dispatch(setParams({ page: 0, field: "new" }));
+    }
+  }, [dispatch, location.pathname]);
 
   useEffect(() => {
-    if (inited)
-      if (location.pathname.includes("nexus-all")) {
-        setParams_({ page: 0 });
-      } else if (location.pathname.includes("nexus-trending")) {
-        setParams_({ page: 0 });
-      } else if (location.pathname.includes("nexus-rise")) {
-        setParams_({ page: 0 });
-      } else if (location.pathname.includes("nexus-hot")) {
-        setParams_({ page: 0 });
-      } else if (location.pathname.includes("nexus-new")) {
-        setParams_({ page: 0 });
-      }
-  }, [dispatch, inited, location.pathname]);
-
-  useEffect(() => {
-    if (inited) fetchProducts();
-  }, [params, inited, dispatch, params_, fetchProducts]);
+    fetchProducts();
+  }, [params, dispatch, fetchProducts]);
 
   const handleChangePage = (event, newPage) => {
     if (!userStatus) return;

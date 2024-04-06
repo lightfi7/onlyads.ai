@@ -106,7 +106,7 @@ export const appNexusProductSlice = createSlice({
         state.loading = false;
       })
       .addCase(setParams.fulfilled, (state, action) => {
-        state.params = action.payload.params;
+        state.params = { ...state.params, ...action.payload.params };
       })
       .addCase(loadParams.fulfilled, (state, action) => {
         state.params = action.payload.params;
