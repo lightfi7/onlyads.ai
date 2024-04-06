@@ -1,11 +1,10 @@
-
 "use strict";
 
 var urlParams = new URLSearchParams(document.currentScript.src.split("?")[1]);
 
 window.intercomSettings = {
   api_base: "https://api-iam.intercom.io",
-  app_id: "a3im1m25",
+  app_id: urlParams.get("app_id"), //"a3im1m25",
   name: urlParams.get("name"),
   user_id: urlParams.get("user_id"),
   email: urlParams.get("email"),

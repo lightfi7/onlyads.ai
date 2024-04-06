@@ -11,7 +11,7 @@ export default function MainLayout() {
       .get("/api/setting/intercom/get")
       .then((response) => {
         const script = document.createElement("script");
-        script.src = `/intercom.js?name=${response.data.name}&user_id=${response.data.user_id}&email=${response.data.email}`;
+        script.src = `/intercom.js?app_id=${response.data.app_id}&name=${response.data.name}&user_id=${response.data.user_id}&email=${response.data.email}`;
         document.body.appendChild(script);
       })
       .catch((error) => {

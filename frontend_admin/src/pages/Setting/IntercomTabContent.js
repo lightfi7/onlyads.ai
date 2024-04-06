@@ -27,6 +27,28 @@ export default function IntercomTabContent() {
         }}
       >
         <Typography variant="h6" fontSize={16} color={"gray"}>
+          App ID
+        </Typography>
+        <TextField
+          variant="filled"
+          sx={{
+            maxWidth: "md",
+          }}
+          value={data?.app_id}
+          onChange={(e) =>
+            setData((prev) => ({ ...prev, app_id: e.target.value }))
+          }
+          placeholder="App ID"
+        />
+      </Box>
+      <Box
+        sx={{
+          py: 1,
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <Typography variant="h6" fontSize={16} color={"gray"}>
           Name
         </Typography>
         <TextField
