@@ -311,6 +311,11 @@ function Header() {
                 anchorEl={menuRef1.current}
                 open={openMenu1}
                 onClose={handleClose}
+                onMouseMove={(e) => {
+                  if (e.target.getAttribute("role") === "presentation") {
+                    setOpenMenu1(false);
+                  }
+                }}
                 sx={{
                   top: 80,
                   "& .MuiBackdrop-root": {
@@ -321,15 +326,10 @@ function Header() {
                     top: "0 !important",
                   },
                 }}
-                MenuListProps={{
-                  onMouseEnter: () => setOpenMenu1(true),
-                  onMouseLeave: () => setOpenMenu1(false),
-                  "aria-labelledby": "basic-button",
-                }}
                 TransitionComponent={Grow}
                 TransitionProps={{
                   timeout: {
-                    enter: 300,
+                    enter: 600,
                     exit: 0,
                   },
                 }}
@@ -377,6 +377,11 @@ function Header() {
                 anchorEl={menuRef2.current}
                 open={openMenu12}
                 onClose={handleClose2}
+                onMouseMove={(e) => {
+                  if (e.target.getAttribute("role") === "presentation") {
+                    setOpenMenu2(false);
+                  }
+                }}
                 sx={{
                   top: 80,
                   "& .MuiBackdrop-root": {
@@ -387,10 +392,12 @@ function Header() {
                     top: "0 !important",
                   },
                 }}
-                MenuListProps={{
-                  onMouseEnter: () => setOpenMenu2(true),
-                  onMouseLeave: () => setOpenMenu2(false),
-                  "aria-labelledby": "basic-button2",
+                TransitionComponent={Grow}
+                TransitionProps={{
+                  timeout: {
+                    enter: 600,
+                    exit: 0,
+                  },
                 }}
               >
                 {pages4.map((page, key) => {
