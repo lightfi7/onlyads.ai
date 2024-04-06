@@ -779,8 +779,9 @@ export default function SearchBar({ data, userStatus }) {
                   Platform :
                 </Typography>
                 <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
-                  {ads_platforms.map((p) => (
+                  {ads_platforms.map((p, k) => (
                     <Button
+                      key={k}
                       disabled={!userStatus}
                       variant={p.id == params.type ? "contained" : "outlined"}
                       onClick={() => {
