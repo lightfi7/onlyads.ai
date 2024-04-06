@@ -41,7 +41,7 @@ export default function IntercomTabContent({ handleMessage }) {
           placeholder="App ID"
         />
       </Box>
-      <Box
+      {/* <Box
         sx={{
           py: 1,
           display: "flex",
@@ -106,7 +106,7 @@ export default function IntercomTabContent({ handleMessage }) {
           }
           placeholder="Email"
         />
-      </Box>
+      </Box> */}
       <Divider sx={{ my: 3 }} />
       <Button
         variant="contained"
