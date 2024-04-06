@@ -17,10 +17,10 @@ export const publicRoutes = {
   path: "/",
   element: <GuestGuard />,
   children: [
-    // {
-    //   path: "/",
-    //   element: <Welcome />,
-    // },
+    {
+      path: "/",
+      element: <SignIn />,
+    },
     {
       path: "/signin",
       element: <SignIn />,
