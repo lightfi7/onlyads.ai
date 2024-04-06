@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Typography, TextField, Button, Divider } from "@mui/material";
 import axios from "../../services/axios";
 
 export default function IntercomTabContent() {
   const [data, setData] = useState({});
 
-  const fetchOption = useCallback(() => {
+  useEffect(() => {
     axios
       .get("/api/setting/intercom/get")
       .then((response) => {
@@ -13,10 +13,6 @@ export default function IntercomTabContent() {
       })
       .catch((error) => console.log(error));
   }, []);
-
-  useEffect(() => {
-    fetchOption();
-  }, [fetchOption]);
 
   return (
     <Box>
