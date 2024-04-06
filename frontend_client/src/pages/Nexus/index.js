@@ -33,7 +33,6 @@ export default function Nexus() {
   const { user, isLoading } = useAuth();
   const userStatus = !user?.expired;
   const [params_, setParams_] = React.useState({
-    field: "nexus",
     page: 1,
   });
 
@@ -52,6 +51,10 @@ export default function Nexus() {
   //   };
   // }, [handleScroll]);
 
+  const fetchProducts = useCallback(() => {
+    dispatch(getProducts({ ...params, ...params_ }));
+  }, [dispatch, params, params_]);
+
   useEffect(() => {
     dispatch(loadParams());
   }, [dispatch]);
@@ -59,25 +62,21 @@ export default function Nexus() {
   useEffect(() => {
     if (inited)
       if (location.pathname.includes("nexus-all")) {
-        setParams_({ page: 0, field: "nexus" });
+        setParams_({ page: 0 });
       } else if (location.pathname.includes("nexus-trending")) {
-        setParams_({ page: 0, field: "trend" });
+        setParams_({ page: 0 });
       } else if (location.pathname.includes("nexus-rise")) {
-        setParams_({ page: 0, field: "rise" });
+        setParams_({ page: 0 });
       } else if (location.pathname.includes("nexus-hot")) {
-        setParams_({ page: 0, field: "hot" });
+        setParams_({ page: 0 });
       } else if (location.pathname.includes("nexus-new")) {
-        setParams_({ page: 0, field: "new" });
+        setParams_({ page: 0 });
       }
   }, [dispatch, inited, location.pathname]);
 
   useEffect(() => {
-    dispatch(setParams({ ...params, ...params_ }));
-  }, [params_]);
-
-  useEffect(() => {
-    if (inited) dispatch(getProducts({}));
-  }, [params, inited, dispatch]);
+    if (inited) fetchProducts();
+  }, [params, inited, dispatch, params_, fetchProducts]);
 
   const handleChangePage = (event, newPage) => {
     if (!userStatus) return;

@@ -8,7 +8,7 @@ export const getProducts = createAsyncThunk(
   "appNexusProducts/getProducts",
   async (params, { dispatch, getState }) => {
     const response = await axios.post("/api/nexus/products", {
-      ...getState().nexus.params,
+      // ...getState().nexus.params,
       ...params,
     });
     return { data: response.data[0], params };

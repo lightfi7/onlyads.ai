@@ -48,6 +48,10 @@ export default function Nexus() {
   //   };
   // }, [handleScroll]);
 
+  const fetchProducts = useCallback(() => {
+    dispatch(getProducts({ ...params, ...params_ }));
+  }, [dispatch, params, params_]);
+
   useEffect(() => {
     dispatch(loadParams());
   }, [dispatch]);
@@ -67,13 +71,10 @@ export default function Nexus() {
       }
   }, [dispatch, inited, location.pathname]);
 
-  useEffect(() => {
-    dispatch(setParams({ ...params, ...params_ }));
-  }, [params_]);
 
   useEffect(() => {
-    if (inited) dispatch(getProducts({}));
-  }, [params, inited, dispatch]);
+    if (inited) fetchProducts();
+  }, [params, inited, dispatch, params_, fetchProducts]);
 
   const handleChangePage = (event, newPage) => {
     dispatch(setParams({ ...params, page: newPage }));
