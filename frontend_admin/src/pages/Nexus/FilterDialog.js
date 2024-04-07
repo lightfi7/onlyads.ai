@@ -165,9 +165,9 @@ export default function FilterDialog(props) {
                   fullWidth
                   options={countries}
                   onChange={(e, value) => {
-                    setParams({ ...params, countries: value });
+                    setParams({ ...params, ship_from: value });
                   }}
-                  value={params.countries || []}
+                  value={params.ship_from || []}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField {...params} label="" placeholder="Ships From" />

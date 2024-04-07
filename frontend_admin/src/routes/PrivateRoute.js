@@ -14,6 +14,7 @@ const Products = Loadable(lazy(() => import("../pages/Products")));
 const TopProducts = Loadable(lazy(() => import("../pages/TopProducts")));
 const TopStores = Loadable(lazy(() => import("../pages/TopStores")));
 const Nexus = Loadable(lazy(() => import("../pages/Nexus")));
+const Amazon = Loadable(lazy(() => import("../pages/Amazon")));
 
 export const privateRoutes = {
   path: "/",
@@ -83,6 +84,10 @@ export const privateRoutes = {
         {
           path: "/nexus-all",
           element: <Nexus />,
+        },
+        {
+          path: "/marketplaces/amazon",
+          element: <Amazon />,
         },
       ],
     },

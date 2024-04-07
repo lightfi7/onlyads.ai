@@ -53,6 +53,7 @@ require("./routes/products.route")(app);
 require("./routes/sales.route")(app);
 require("./routes/chart.route")(app);
 require("./routes/nexus.route")(app);
+require("./routes/amazon.route")(app);
 require("./routes/setting.route")(app);
 
 // Serve static files from the React app

@@ -3,9 +3,6 @@ const Chart = require("../models/nexus/chart.model");
 const Supplier = require("../models/nexus/supplier.model");
 const Trend = require("../models/nexus/trend.model");
 const NexusProduct = db.nexus_product;
-const NexusChart = db.nexus_chart;
-const NexusTrend = db.nexus_trend;
-const NexusSupplier = db.nexus_supplier;
 
 exports.findAll = async (req, res) => {
   try {

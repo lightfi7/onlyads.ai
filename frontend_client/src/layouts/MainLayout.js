@@ -9,7 +9,6 @@ import { v4 as uuidv4, v5 as uuidv5 } from "uuid";
 
 export default function MainLayout() {
   const { user, isLoading } = useAuth();
-  console.log(user);
   const addIntercomScript = React.useCallback(() => {
     axios
       .get("/api/setting/intercom/get")

@@ -590,7 +590,7 @@ export default function ProductDetails(props) {
                       target="_blank"
                       href={product.productAmazonAds}
                       startIcon={
-                        <img src="/amazon.png" alt="amazon" width={18} />
+                        <img src="/imgs/amazon.png" alt="amazon" width={18} />
                       }
                     >
                       Find on Amazon
@@ -835,7 +835,9 @@ export default function ProductDetails(props) {
                   variant="outlined"
                   target="_blank"
                   href={product.productAmazonAds}
-                  startIcon={<img src="/amazon.png" alt="amazon" width={18} />}
+                  startIcon={
+                    <img src="/imgs/amazon.png" alt="amazon" width={18} />
+                  }
                 >
                   Find on Amazon
                 </Button>

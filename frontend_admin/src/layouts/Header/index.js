@@ -43,7 +43,10 @@ const pages4 = [
   { title: "All", href: "/nexus-all", role: ["admin"] },
 ];
 
-const pages3 = [{ title: "Users", href: "/users", role: ["admin"] }];
+const pages3 = [
+  { title: "Amazon", href: "/marketplaces/amazon", role: ["admin"] },
+  { title: "Users", href: "/users", role: ["admin"] },
+];
 
 const settings = [
   { title: "Account", href: "/setting", role: ["admin", "user"] },

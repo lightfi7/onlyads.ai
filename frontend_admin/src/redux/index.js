@@ -5,6 +5,7 @@ import plans from "./plans/planSlice";
 import topproducts from "./sales/topProductSlice";
 import topstores from "./sales/topStoreSlice";
 import nexus from "./nexus/nexusSlice";
+import amazon from "./amazon/amazonSlice";
 import theme from "./theme/themeSlice";
 
 const rootReducer = {
@@ -14,6 +15,7 @@ const rootReducer = {
   topproducts,
   topstores,
   nexus,
+  amazon,
   users,
   plans,
 };

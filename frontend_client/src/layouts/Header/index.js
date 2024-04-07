@@ -32,7 +32,10 @@ const pages4 = [
   { title: "All", href: "/nexus-all", role: ["user"] },
 ];
 
-const pages3 = [{ title: "Pricing", href: "/pricing", role: ["user"] }];
+const pages3 = [
+  { title: "Amazon", href: "/marketplaces/amazon", role: ["user"] },
+  { title: "Pricing", href: "/pricing", role: ["user"] },
+];
 
 const settings = [{ title: "Account", href: "/setting", role: ["user"] }];
 

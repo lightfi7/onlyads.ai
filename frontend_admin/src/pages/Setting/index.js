@@ -67,7 +67,7 @@ export default function Setting() {
     axios
       .post("/api/setting/paypal/get", { id: user?._id })
       .then((response) => setApiKey(response.data.apiKey));
-  }, []);
+  }, [user?._id]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);

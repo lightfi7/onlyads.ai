@@ -58,9 +58,16 @@ export default function FilterDialog(props) {
       orders: params?.orders,
       store_selling: params?.store_selling,
       categories: params?.categories,
-      ship_from: params?.ship_from
-    })
-  }, [params?.categories, params?.orders, params?.price, params?.ship_from, params?.store_selling, props.params])
+      ship_from: params?.ship_from,
+    });
+  }, [
+    params?.categories,
+    params?.orders,
+    params?.price,
+    params?.ship_from,
+    params?.store_selling,
+    props.params,
+  ]);
 
   return (
     <Dialog
@@ -171,9 +178,9 @@ export default function FilterDialog(props) {
                   fullWidth
                   options={countries}
                   onChange={(e, value) => {
-                    setParams({ ...params, countries: value });
+                    setParams({ ...params, ship_from: value });
                   }}
-                  value={params.countries || []}
+                  value={params.ship_from || []}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField {...params} label="" placeholder="Ships From" />
@@ -378,7 +385,7 @@ export default function FilterDialog(props) {
             onClick={() => {
               props?.setParams({
                 ...props?.params,
-                ...params
+                ...params,
               });
             }}
           >

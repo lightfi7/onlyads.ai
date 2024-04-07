@@ -301,7 +301,7 @@ export default function AISupplierList(props) {
                           minHeight: 150,
                         }}
                       >
-                        No data found...
+                        No results found
                       </Typography>
                     </TableCell>
                   </TableRow>

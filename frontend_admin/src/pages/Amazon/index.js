@@ -11,36 +11,20 @@ import {
 import SearchBar from "./SearchBar";
 import ProductCard from "./ProductCard";
 import { useDispatch, useSelector } from "react-redux";
-import { getProducts, setParams } from "../../redux/nexus/nexusSlice";
-import ProductDetails from "./ProductDetails";
-import { useLocation } from "react-router-dom";
+import { getProducts, setParams } from "../../redux/amazon/amazonSlice";
+import TrendChat from "./TrendChat";
 
-export default function Nexus() {
+export default function Amazon() {
   const { params, products, total, loading } = useSelector(
-    (state) => state.nexus
+    (state) => state.amazon
   );
   const dispatch = useDispatch();
-  const location = useLocation();
   const [product, setProduct] = useState();
-  const [showProductResearch, setShowProductResearch] = useState(false);
+  const [showTrendChart, setShowTrendChart] = useState(false);
 
   const fetchProducts = useCallback(() => {
     dispatch(getProducts(params));
   }, [dispatch, params]);
-
-  useEffect(() => {
-    if (location.pathname.includes("nexus-all")) {
-      dispatch(setParams({ page: 0, field: "nexus" }));
-    } else if (location.pathname.includes("nexus-trending")) {
-      dispatch(setParams({ page: 0, field: "trend" }));
-    } else if (location.pathname.includes("nexus-rise")) {
-      dispatch(setParams({ page: 0, field: "rise" }));
-    } else if (location.pathname.includes("nexus-hot")) {
-      dispatch(setParams({ page: 0, field: "hot" }));
-    } else if (location.pathname.includes("nexus-new")) {
-      dispatch(setParams({ page: 0, field: "new" }));
-    }
-  }, [dispatch, location.pathname]);
 
   useEffect(() => {
     fetchProducts();
@@ -54,9 +38,9 @@ export default function Nexus() {
     dispatch(setParams({ ...params, page: 0, page_size: event.target.value }));
   };
 
-  const handleResearch = (product) => {
+  const handleTrendChart = (product) => {
     setProduct(product);
-    setShowProductResearch(true);
+    setShowTrendChart(true);
   };
 
   return (
@@ -78,20 +62,12 @@ export default function Nexus() {
                 page: 0,
                 page_size: 50,
                 q: "",
-                ship_from: [],
                 categories: [],
                 price: {
                   min: null,
                   max: null,
                 },
-                orders: {
-                  min: null,
-                  max: null,
-                },
-                store_selling: {
-                  min: null,
-                  max: null,
-                },
+                rank: "any",
               })
             );
           }}
@@ -129,7 +105,10 @@ export default function Nexus() {
           <Grid container spacing={1} sx={{ mt: 2 }}>
             {products.map((product, index) => (
               <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
-                <ProductCard data={product} handleResearch={handleResearch} />
+                <ProductCard
+                  data={product}
+                  handleTrendChart={handleTrendChart}
+                />
               </Grid>
             ))}
           </Grid>
@@ -142,10 +121,10 @@ export default function Nexus() {
             rowsPerPageOptions={[12, 24, 36, 48]}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
-          {product && showProductResearch && (
-            <ProductDetails
-              open={showProductResearch}
-              onClose={() => setShowProductResearch(false)}
+          {product && showTrendChart && (
+            <TrendChat
+              open={showTrendChart}
+              onClose={() => setShowTrendChart(false)}
               product={product}
             />
           )}
