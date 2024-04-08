@@ -10,7 +10,7 @@ window.intercomSettings = {
   email: urlParams.get("email"),
   user_hash: urlParams.get("user_hash"),
 };
-console.log(window.intercomSettings.user_hash);
+
 var w = window;
 var ic = w.Intercom;
 if (typeof ic === "function") {
