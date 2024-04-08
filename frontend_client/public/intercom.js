@@ -8,9 +8,9 @@ window.intercomSettings = {
   name: urlParams.get("name"),
   user_id: urlParams.get("user_id"),
   email: urlParams.get("email"),
-  created_at: urlParams.get("created_at"),
+  user_hash: urlParams.get("user_hash"),
 };
-
+console.log(window.intercomSettings.user_hash);
 var w = window;
 var ic = w.Intercom;
 if (typeof ic === "function") {
@@ -30,7 +30,8 @@ if (typeof ic === "function") {
     var s = d.createElement("script");
     s.type = "text/javascript";
     s.async = true;
-    s.src = "https://widget.intercom.io/widget/a3im1m25";
+    s.src =
+      "https://widget.intercom.io/widget/" + window.intercomSettings.app_id;
     var x = d.getElementsByTagName("script")[0];
     x.parentNode.insertBefore(s, x);
   };

@@ -97,7 +97,9 @@ exports.signin = (req, res) => {
         expiresIn: 86400, // 24 hours
       });
 
-      const { intercom_secret_key = "" } = await Setting.findOne({});
+      const {
+        intercom: { intercom_secret_key = "" },
+      } = await Setting.findOne({});
       const uhash = hash(intercom_secret_key, user.email);
 
       res.status(200).send({
@@ -139,7 +141,10 @@ exports.me = (req, res) => {
       if (!user) {
         return res.status(500).send("User not found");
       }
-      const { intercom_secret_key = "" } = await Setting.findOne({});
+      const {
+        intercom: { intercom_secret_key = "" },
+      } = await Setting.findOne({});
+      console.log(intercom_secret_key);
       const uhash = hash(intercom_secret_key, user.email);
       return res.send({
         accessToken: req.token,
