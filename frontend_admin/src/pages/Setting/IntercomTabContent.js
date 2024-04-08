@@ -66,50 +66,6 @@ export default function IntercomTabContent({ handleMessage }) {
           placeholder="Intercom Secret Key"
         />
       </Box>
-      {/* <Box
-        sx={{
-          py: 1,
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <Typography variant="h6" fontSize={16} color={"gray"}>
-          User ID
-        </Typography>
-        <TextField
-          variant="filled"
-          sx={{
-            maxWidth: "md",
-          }}
-          value={data?.user_id}
-          onChange={(e) =>
-            setData((prev) => ({ ...prev, user_id: e.target.value }))
-          }
-          placeholder="User ID"
-        />
-      </Box>
-      <Box
-        sx={{
-          py: 1,
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <Typography variant="h6" fontSize={16} color={"gray"}>
-          Email
-        </Typography>
-        <TextField
-          variant="filled"
-          sx={{
-            maxWidth: "md",
-          }}
-          value={data?.email}
-          onChange={(e) =>
-            setData((prev) => ({ ...prev, email: e.target.value }))
-          }
-          placeholder="Email"
-        />
-      </Box> */}
       <Divider sx={{ my: 3 }} />
       <Button
         variant="contained"
