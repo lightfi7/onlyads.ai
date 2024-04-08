@@ -15,7 +15,7 @@ export default function MainLayout() {
       .then((response) => {
         const v4Id = uuidv4();
         const script = document.createElement("script");
-        script.src = `/intercom.js?app_id=${response.data.app_id}&name=${user.userName}&user_id=${v4Id}&email=${user.email}`;
+        script.src = `/intercom.js?app_id=${response.data.app_id}&name=${user.userName}&user_id=${v4Id}&email=${user.email}&user_hash=${user.uhash}`;
         document.body.appendChild(script);
       })
       .catch((error) => {

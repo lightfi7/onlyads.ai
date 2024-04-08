@@ -41,7 +41,7 @@ export default function IntercomTabContent({ handleMessage }) {
           placeholder="App ID"
         />
       </Box>
-      {/* <Box
+      <Box
         sx={{
           py: 1,
           display: "flex",
@@ -49,21 +49,24 @@ export default function IntercomTabContent({ handleMessage }) {
         }}
       >
         <Typography variant="h6" fontSize={16} color={"gray"}>
-          Name
+          Intercom Secret Key
         </Typography>
         <TextField
           variant="filled"
           sx={{
             maxWidth: "md",
           }}
-          value={data?.name}
+          value={data?.intercom_secret_key}
           onChange={(e) =>
-            setData((prev) => ({ ...prev, name: e.target.value }))
+            setData((prev) => ({
+              ...prev,
+              intercom_secret_key: e.target.value,
+            }))
           }
-          placeholder="Name"
+          placeholder="Intercom Secret Key"
         />
       </Box>
-      <Box
+      {/* <Box
         sx={{
           py: 1,
           display: "flex",
