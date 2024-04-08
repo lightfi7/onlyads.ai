@@ -163,6 +163,12 @@ exports.findAll = async (req, res) => {
     }
 
     queries.push({
+      $sort: {
+        _id: -1,
+      },
+    });
+
+    queries.push({
       $facet: {
         metadata: [{ $count: "total" }],
         data: [{ $skip: skip }, { $limit: page_size }],
