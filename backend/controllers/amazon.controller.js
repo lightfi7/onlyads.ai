@@ -63,8 +63,8 @@ exports.findAll = async (req, res) => {
       case ">10":
         queries.push({
           $match: {
-            _productRank: {
-              $gte: 10,
+            _productOrdersRanking: {
+              $lte: 10,
             },
           },
         });
@@ -72,8 +72,8 @@ exports.findAll = async (req, res) => {
       case ">100":
         queries.push({
           $match: {
-            _productRank: {
-              $gte: 100,
+            _productOrdersRanking: {
+              $lte: 100,
             },
           },
         });
@@ -81,8 +81,8 @@ exports.findAll = async (req, res) => {
       case ">500":
         queries.push({
           $match: {
-            _productRank: {
-              $gte: 500,
+            _productOrdersRanking: {
+              $lte: 500,
             },
           },
         });
@@ -90,8 +90,8 @@ exports.findAll = async (req, res) => {
       case ">1000":
         queries.push({
           $match: {
-            _productRank: {
-              $gte: 1000,
+            _productOrdersRanking: {
+              $lte: 1000,
             },
           },
         });
@@ -99,8 +99,8 @@ exports.findAll = async (req, res) => {
       case ">10000":
         queries.push({
           $match: {
-            _productRank: {
-              $gte: 10000,
+            _productOrdersRanking: {
+              $lte: 10000,
             },
           },
         });
