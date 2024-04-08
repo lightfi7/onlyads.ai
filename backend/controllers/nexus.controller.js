@@ -86,7 +86,7 @@ exports.findAll = async (req, res) => {
     if (categories && Array.isArray(categories) && categories.length) {
       queries.push({
         $match: {
-          productCategory: {
+          productCategories: {
             $in: categories.map((item) => new RegExp(item, "i")),
           },
         },
