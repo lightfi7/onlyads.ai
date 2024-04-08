@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 var supplierSchema = mongoose.Schema({
-  productId: String,
+  productId: { type: String, index: true, unique: true },
   choosen_shipping_method: String,
   choosen_shipping_method_mandatory: Boolean,
   matchingProducts: [],

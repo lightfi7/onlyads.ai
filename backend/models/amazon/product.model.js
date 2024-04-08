@@ -3,7 +3,8 @@ var schema = mongoose.Schema(
   {
     imageURL: String,
     videoURL: String,
-    productId: String,
+    productId: { type: String, index: true, unique: true },
+    productCategories: [],
     productType: String,
     productLink: String,
     productName: String,

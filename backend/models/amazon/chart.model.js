@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 var chartSchema = mongoose.Schema({
-  productId: String,
+  productId: { type: String, index: true, unique: true },
   rows: [],
   tick: [],
 });
