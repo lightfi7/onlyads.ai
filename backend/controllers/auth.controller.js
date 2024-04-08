@@ -1,10 +1,7 @@
 const db = require("../models");
 const config = require("../config/auth.config");
 const User = db.user;
-const Setting = db.setting;
-
 const fs = require("fs");
-const hash = require("../utils/hash");
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 const sendEmail = require("../utils/email/sendEmail");
@@ -97,11 +94,6 @@ exports.signin = (req, res) => {
         expiresIn: 86400, // 24 hours
       });
 
-      const {
-        intercom: { intercom_secret_key = "" },
-      } = await Setting.findOne({});
-      const uhash = hash(intercom_secret_key, user.email);
-
       res.status(200).send({
         user: {
           _id: user._id,
@@ -121,7 +113,6 @@ exports.signin = (req, res) => {
           zipCode: user.zipCode,
           membership,
           expired,
-          uhash,
         },
         accessToken,
       });
@@ -141,11 +132,6 @@ exports.me = (req, res) => {
       if (!user) {
         return res.status(500).send("User not found");
       }
-      const {
-        intercom: { intercom_secret_key = "" },
-      } = await Setting.findOne({});
-      console.log(intercom_secret_key);
-      const uhash = hash(intercom_secret_key, user.email);
       return res.send({
         accessToken: req.token,
         user: {
@@ -166,7 +152,6 @@ exports.me = (req, res) => {
           zipCode: user.zipCode,
           membership: req.membership,
           expired: req.expired,
-          uhash,
         },
       });
     })

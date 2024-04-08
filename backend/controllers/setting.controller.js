@@ -1,4 +1,5 @@
 const db = require("../models");
+const hash = require("../utils/hash");
 const exec = require("child_process").exec;
 const Setting = db.setting;
 const Status = db.status;
@@ -144,9 +145,18 @@ exports.backup = (req, res) => {
 };
 
 exports.getIntercomOptions = (req, res) => {
+  const { uid } = req.query;
   Setting.findOne({})
     .then((data) => {
-      res.send(data?.intercom);
+      if (uid)
+        res.send({
+          app_id: data?.intercom?.app_id,
+          hash: hash(data?.intercom?.intercom_secret_key, uid.toString()),
+        });
+      else
+        res.send({
+          app_id: data?.intercom?.app_id,
+        });
     })
     .catch((err) => {
       res.status(500).send("Internal server error");

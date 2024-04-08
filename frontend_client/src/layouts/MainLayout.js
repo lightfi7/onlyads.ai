@@ -10,12 +10,12 @@ import { v4 as uuidv4, v5 as uuidv5 } from "uuid";
 export default function MainLayout() {
   const { user, isLoading } = useAuth();
   const addIntercomScript = React.useCallback(() => {
+    const v4Id = uuidv4();
     axios
-      .get("/api/setting/intercom/get")
+      .get("/api/setting/intercom/get?uid=" + v4Id)
       .then((response) => {
-        const v4Id = uuidv4();
         const script = document.createElement("script");
-        script.src = `/intercom.js?app_id=${response.data.app_id}&name=${user.userName}&user_id=${v4Id}&email=${user.email}&user_hash=${user.uhash}`;
+        script.src = `/intercom.js?app_id=${response.data.app_id}&name=${user.userName}&user_id=${v4Id}&email=${user.email}&user_hash=${response.data.hash}`;
         document.body.appendChild(script);
       })
       .catch((error) => {
