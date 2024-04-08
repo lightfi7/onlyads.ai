@@ -7,6 +7,8 @@ var schema = mongoose.Schema(
     productCategories: [],
     productType: String,
     productLink: String,
+    productAmazonLink: String,
+    productAliexpressLink: String,
     productName: String,
     productRating: String,
     productPrice: String,

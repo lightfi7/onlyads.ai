@@ -227,7 +227,7 @@ export default function ProductCard({ data, handleTrendChart }) {
                 />
               </IconButton>
               <IconButton
-                href={data?.productLink2}
+                href={data?.productAliexpressLink}
                 target="_blank"
                 sx={{
                   borderRadius: 1,
