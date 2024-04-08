@@ -146,7 +146,6 @@ exports.backup = (req, res) => {
 
 exports.getIntercomOptions = (req, res) => {
   const { uid } = req.query;
-  console.log(uid);
   Setting.findOne({})
     .then((data) => {
       if (uid)
