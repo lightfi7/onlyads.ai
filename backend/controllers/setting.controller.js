@@ -146,6 +146,7 @@ exports.backup = (req, res) => {
 
 exports.getIntercomOptions = (req, res) => {
   const { uid } = req.query;
+  console.log(uid);
   Setting.findOne({})
     .then((data) => {
       if (uid)
@@ -153,10 +154,7 @@ exports.getIntercomOptions = (req, res) => {
           app_id: data?.intercom?.app_id,
           hash: hash(data?.intercom?.intercom_secret_key, uid.toString()),
         });
-      else
-        res.send({
-          app_id: data?.intercom?.app_id,
-        });
+      else res.send(data?.intercom);
     })
     .catch((err) => {
       res.status(500).send("Internal server error");
