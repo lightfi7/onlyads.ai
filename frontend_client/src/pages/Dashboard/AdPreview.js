@@ -692,9 +692,9 @@ export default function AdPreview({ data }) {
                   >
                     Landing Page
                   </Button>
-                  <Button variant="outlined" href={`/details/${data._id}`}>
+                  {/* <Button variant="outlined" href={`/details/${data._id}`}>
                     Details
-                  </Button>
+                  </Button> */}
                   <Button
                     variant="outlined"
                     onClick={() =>
