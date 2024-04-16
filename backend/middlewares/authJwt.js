@@ -11,7 +11,7 @@ verifyToken = (req, res, next) => {
   }
 
   if (!token) {
-    return res.status(403).send("No token provided!");
+    return res.status(401).send("No token provided!");
   }
 
   jwt.verify(token, config.secret, (err, decoded) => {
@@ -30,7 +30,7 @@ isAdmin = (req, res, next) => {
       next();
       return;
     }
-    res.status(403).send("Require Admin Role!");
+    res.status(401).send("Require Admin Role!");
     return;
   });
 };
