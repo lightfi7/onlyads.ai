@@ -390,7 +390,7 @@ exports.findProductsByStore = async (req, res) => {
   const skip = page_num * page_count;
   queries.push({
     $match: {
-      "store.id": storeId,
+      storeId: storeId,
     },
   });
 
