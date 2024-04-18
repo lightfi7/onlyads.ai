@@ -222,31 +222,31 @@ exports.findAll = async (req, res) => {
       },
     ];
 
-    if (qt == "keyword") {
-      queries.push({
-        $match: {
-          title: new RegExp(queryLowered, "i"),
-        },
-      });
-    } else if (qt == "text") {
-      queries.push({
-        $match: {
-          body: new RegExp(queryLowered, "i"),
-        },
-      });
-    } else if (qt == "advertiser") {
-      queries.push({
-        $match: {
-          advertiser_name: new RegExp(queryLowered, "i"),
-        },
-      });
-    } else if (qt == "link") {
-      queries.push({
-        $match: {
-          domain: new RegExp(queryLowered, "i"),
-        },
-      });
-    }
+    // if (qt == "keyword") {
+    //   queries.push({
+    //     $match: {
+    //       title: new RegExp(queryLowered, "i"),
+    //     },
+    //   });
+    // } else if (qt == "text") {
+    //   queries.push({
+    //     $match: {
+    //       body: new RegExp(queryLowered, "i"),
+    //     },
+    //   });
+    // } else if (qt == "advertiser") {
+    //   queries.push({
+    //     $match: {
+    //       advertiser_name: new RegExp(queryLowered, "i"),
+    //     },
+    //   });
+    // } else if (qt == "link") {
+    //   queries.push({
+    //     $match: {
+    //       domain: new RegExp(queryLowered, "i"),
+    //     },
+    //   });
+    // }
 
     if (publisher != 0) {
       queries.push({
