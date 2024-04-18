@@ -364,32 +364,22 @@ exports.findAll = async (req, res) => {
       },
     });
 
-    Ads.aggregate(queries)
-      .allowDiskUse(true)
-      .then((data) => {
-        let total = 12;
-        if (data[0].metadata.length) total = data[0].metadata[0].total;
+    const response = await axios.post(`${process.env.EXTRA_DB_API}/ads`, {
+      queries,
+    });
 
-        // if (req.role == "user") {
-        //   switch (membership?.type) {
-        //     case "Basic":
-        //       total = total > 200 ? 200 : total;
-        //       break;
-        //     case "Standard":
-        //       total = total > 2000 ? 2000 : total;
-        //       break;
-        //     case "Enterprise":
-        //       total = total > 5000 ? 5000 : total;
-        //       break;
-        //     default:
-        //       break;
-        //   }
-        // }
-        res.status(200).send({
-          total,
-          ads: data[0].data,
-        });
-      });
+    res.status(200).send(response.data);
+
+    // Ads.aggregate(queries)
+    //   .allowDiskUse(true)
+    //   .then((data) => {
+    //     let total = 12;
+    //     if (data[0].metadata.length) total = data[0].metadata[0].total;
+    //     res.status(200).send({
+    //       total,
+    //       ads: data[0].data,
+    //     });
+    //   });
   } catch (err) {
     console.log(err);
     res.status(500).send("Faild to get ads, try again or contact!");
@@ -508,4 +498,4 @@ exports.findOne = async (req, res) => {
   }
 };
 
-exports.delete = (req, res) => { };
+exports.delete = (req, res) => {};
