@@ -364,7 +364,7 @@ exports.findAll = async (req, res) => {
       },
     });
 
-    const response = await axios.post(`http://34.30.29.35/db/ads`, {
+    const response = await axios.post(`${process.env.EXTRA_DB_API}/ads`, {
       queries,
     });
 
