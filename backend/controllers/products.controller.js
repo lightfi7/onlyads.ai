@@ -15,7 +15,7 @@ try {
   // Filtering
   const matchStage = {};
 
-  if (params.filters.categories.length > 0) {
+  if (params.filters.categories.length > 0 && params.filters.categories.length != 20) {
     matchStage.category = { $in: params.filters.categories };
   }
 
