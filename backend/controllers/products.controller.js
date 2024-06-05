@@ -10,7 +10,7 @@ exports.findAll = async (req, res) => {
   const membership = req.membership;
 
   const queries = [];
-  const que = []
+  const filter = []
 
   try {
     // Filtering
@@ -104,8 +104,9 @@ exports.findAll = async (req, res) => {
         ],
       };
     }
+    
     if (params.filters.store_created_at.min || params.filters.store_created_at.max) {
-      que.push({
+      filter.push({
         $addFields: {
           storeCreatedAt: {
             $dateFromString: {
@@ -115,6 +116,7 @@ exports.findAll = async (req, res) => {
         },
       });
     }
+
     if (params.filters.product_created_at.max) {
       matchStage.$expr = {
         ...matchStage.$expr,
@@ -215,19 +217,16 @@ exports.findAll = async (req, res) => {
       page_size = 12;
     }
 
-    
-
     if (Object.keys(matchStage).length > 0) {
-      que.push({ $match: matchStage });
-
+      filter.push({ $match: matchStage });
     }
 
     if (Object.keys(sort).length > 0) {
-      que.push({ $sort: sort });
+      filter.push({ $sort: sort });
     }
 
-    que.push({ $skip: skip })
-    que.push({ $limit: page_size })
+    filter.push({ $skip: skip })
+    filter.push({ $limit: page_size })
 
     queries.push({
       $facet: {
