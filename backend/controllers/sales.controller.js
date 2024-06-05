@@ -8,128 +8,89 @@ const Membership = db.membership;
 exports.findTopStores = async (req, res) => {
   const { params } = req.body;
   const queries = [];
+  const matchStage = {};
+  const filters = []
   try {
     const expired = req.expired;
     const membership = req.membership;
 
     if (params.filters.q && params.filters.q != "") {
-      queries.push({
-        $match: {
-          title: new RegExp(params.filters.q, "i"),
-        },
-      });
+      matchStage.title = new RegExp(params.filters.q, "i")
     }
 
-    if (params.filters.sales.max)
-      queries.push({
-        $match: {
-          monthly_sales: {
-            $lte: Number(params.filters.sales.max),
+
+    if (params.filters.sales.max || params.filters.sales.min) {
+      const salesFilter = {};
+      if (params.filters.sales.max) {
+        salesFilter.$lte = Number(params.filters.sales.max);
+      }
+      if (params.filters.sales.min) {
+        salesFilter.$gte = Number(params.filters.sales.min);
+      }
+      matchStage.monthly_sales = salesFilter
+    }
+
+    if (params.filters.revenue.max || params.filters.revenue.min) {
+      const revenueFilter = {};
+      if (params.filters.revenue.max) {
+        revenueFilter.$lte = Number(params.filters.revenue.max);
+      }
+      if (params.filters.revenue.min) {
+        revenueFilter.$gte = Number(params.filters.revenue.min);
+      }
+      matchStage.monthly_revenue = revenueFilter;
+    }
+
+    if (params.filters.products.min || params.filters.products.max) {
+      const productsFilter = {};
+      if (params.filters.products.min) {
+        productsFilter.$gte = Number(params.filters.products.min);
+      }
+      if (params.filters.products.max) {
+        productsFilter.$lte = Number(params.filters.products.max);
+      }
+      matchStage.products_count = productsFilter;
+    }
+
+
+    if (params.filters.created_at.min || params.filters.created_at.max) {
+      filters.push({
+        $addFields: {
+          createdDate: {
+            $dateFromString: {
+              dateString: "$created_at",
+            },
           },
         },
-      });
-
-    if (params.filters.sales.min)
-      queries.push({
-        $match: {
-          monthly_sales: {
-            $gte: Number(params.filters.sales.min),
-          },
-        },
-      });
-
-    if (params.filters.revenue.max)
-      queries.push({
-        $match: {
-          monthly_revenue: {
-            $lte: Number(params.filters.revenue.max),
-          },
-        },
-      });
-
-    if (params.filters.revenue.min)
-      queries.push({
-        $match: {
-          monthly_revenue: {
-            $gte: Number(params.filters.revenue.min),
-          },
-        },
-      });
-
-    if (params.filters.products.min)
-      queries.push({
-        $match: {
-          products_count: {
-            $gte: Number(params.filters.products.min),
-          },
-        },
-      });
-
-    if (params.filters.products.max)
-      queries.push({
-        $match: {
-          products_count: {
-            $lte: Number(params.filters.products.max),
-          },
-        },
-      });
-
-    queries.push({
-      $addFields: {
-        createdDate: {
+      })
+      const createdAtFilter = {};
+      if (params.filters.created_at.min) {
+        createdAtFilter.$gte = {
           $dateFromString: {
-            dateString: "$created_at",
+            dateString: params.filters.created_at.min,
           },
-        },
-      },
-    });
-
-    if (params.filters.created_at.min)
-      queries.push({
-        $match: {
-          $expr: {
-            $gte: [
-              "$createdDate",
-              {
-                $dateFromString: {
-                  dateString: params.filters.created_at.min,
-                },
-              },
-            ],
+        };
+      }
+      if (params.filters.created_at.max) {
+        createdAtFilter.$lte = {
+          $dateFromString: {
+            dateString: params.filters.created_at.max,
           },
-        },
-      });
-
-    if (params.filters.created_at.max)
-      queries.push({
-        $match: {
-          $expr: {
-            $lte: [
-              "$createdDate",
-              {
-                $dateFromString: {
-                  dateString: params.filters.created_at.max,
-                },
-              },
-            ],
-          },
-        },
-      });
+        };
+      }
+      matchStage.$expr = createdAtFilter
+    }
 
     if (
       params.filters.languages &&
       Array.isArray(params.filters.languages) &&
       params.filters.languages.length
     ) {
-      queries.push({
-        $match: {
-          languages: {
-            $in: params.filters.languages.map(
-              (item) => new RegExp(item.code, "i")
-            ),
-          },
-        },
-      });
+      matchStage.languages = {
+        $in: params.filters.languages.map(
+          (item) => new RegExp(item.code, "i")
+        ),
+      }
     }
 
     // queries.push({
@@ -148,16 +109,26 @@ exports.findTopStores = async (req, res) => {
       page_size = 12;
     }
 
+    if (Object.keys(matchStage).length > 0) {
+      filters.push({ $match: matchStage });
+    }
+
+    filters.push({
+      $sort: {
+        _id: -1,
+      }
+    });
+
+    filters.push({ $skip: skip })
+    filters.push({ $limit: page_size })
+
     queries.push({
       $facet: {
         metadata: [{ $count: "total" }],
-        data: [{ $skip: skip }, { $limit: page_size }],
+        data: filters,
       },
     });
     TopStores.aggregate(queries)
-      .sort({
-        _id: -1,
-      })
       .allowDiskUse(true)
       .then((data) => {
         let total = 0;
@@ -196,7 +167,8 @@ exports.findTopStores = async (req, res) => {
 
 exports.findTopProducts = async (req, res) => {
   const { params } = req.body;
-  const queries = [];
+  const queries = [], filters = [];
+  const matchStage = {};
   try {
     const expired = req.expired;
     const membership = req.membership;
@@ -207,118 +179,89 @@ exports.findTopProducts = async (req, res) => {
           title: new RegExp(params.filters.q, "i"),
         },
       });
+      matchStage.title = new RegExp(params.filters.q, "i")
     }
 
-    if (params.filters.sales.max)
-      queries.push({
-        $match: {
-          monthly_sales: {
-            $lte: Number(params.filters.sales.max),
+
+    if (params.filters.sales.max || params.filters.sales.min) {
+      const salesFilter = {};
+      if (params.filters.sales.max) {
+        salesFilter.$lte = Number(params.filters.sales.max);
+      }
+      if (params.filters.sales.min) {
+        salesFilter.$gte = Number(params.filters.sales.min);
+      }
+      matchStage.monthly_sales = salesFilter;
+    }
+
+    if (params.filters.revenue.max || params.filters.revenue.min) {
+      const revenueFilter = {};
+      if (params.filters.revenue.max) {
+        revenueFilter.$lte = Number(params.filters.revenue.max);
+      }
+      if (params.filters.revenue.min) {
+        revenueFilter.$gte = Number(params.filters.revenue.min);
+      }
+      matchStage.monthly_revenue = revenueFilter;
+    }
+
+    if (params.filters.price.min || params.filters.price.max) {
+      const priceFilter = {};
+      if (params.filters.price.min) {
+        priceFilter.$gte = Number(params.filters.price.min);
+      }
+      if (params.filters.price.max) {
+        priceFilter.$lte = Number(params.filters.price.max);
+      }
+      matchStage.usd_price = priceFilter;
+    }
+
+    if (params.filters.created_at.min || params.filters.created_at.max)
+      filters.push({
+        $addFields: {
+          createdDate: {
+            $dateFromString: {
+              dateString: "$created_at",
+            },
           },
         },
       });
-
-    if (params.filters.sales.min)
-      queries.push({
-        $match: {
-          monthly_sales: {
-            $gte: Number(params.filters.sales.min),
-          },
-        },
-      });
-
-    if (params.filters.revenue.max)
-      queries.push({
-        $match: {
-          monthly_revenue: {
-            $lte: Number(params.filters.revenue.max),
-          },
-        },
-      });
-
-    if (params.filters.revenue.min)
-      queries.push({
-        $match: {
-          monthly_revenue: {
-            $gte: Number(params.filters.revenue.min),
-          },
-        },
-      });
-
-    if (params.filters.price.min)
-      queries.push({
-        $match: {
-          usd_price: {
-            $gte: Number(params.filters.price.min),
-          },
-        },
-      });
-
-    if (params.filters.price.max)
-      queries.push({
-        $match: {
-          usd_price: {
-            $lte: Number(params.filters.price.max),
-          },
-        },
-      });
-
-    queries.push({
-      $addFields: {
-        createdDate: {
-          $dateFromString: {
-            dateString: "$created_at",
-          },
-        },
-      },
-    });
 
     if (params.filters.created_at.min)
-      queries.push({
-        $match: {
-          $expr: {
-            $gte: [
-              "$createdDate",
-              {
-                $dateFromString: {
-                  dateString: params.filters.created_at.min,
-                },
-              },
-            ],
+      matchStage.$expr = {
+        $gte: [
+          "$createdDate",
+          {
+            $dateFromString: {
+              dateString: params.filters.created_at.min,
+            },
           },
-        },
-      });
+        ],
+      }
 
     if (params.filters.created_at.max)
-      queries.push({
-        $match: {
-          $expr: {
-            $lte: [
-              "$createdDate",
-              {
-                $dateFromString: {
-                  dateString: params.filters.created_at.max,
-                },
-              },
-            ],
+      matchStage.$expr = {
+        ...matchStage.$expr,
+        $lte: [
+          "$createdDate",
+          {
+            $dateFromString: {
+              dateString: params.filters.created_at.max,
+            },
           },
-        },
-      });
+        ],
+      }
 
     if (
       params.filters.languages &&
       Array.isArray(params.filters.languages) &&
       params.filters.languages.length > 0
     ) {
-      queries.push({
-        $match: {
-          "store.languages": {
-            $in: params.filters.languages.map(
-              (item) => new RegExp(item.code, "i")
-            ),
-          },
-        },
-      });
+      matchStage["store.languages"] = {
+        $in: params.filters.languages.map(
+          (item) => new RegExp(item.code, "i")
+        ),
+      }
     }
 
     // queries.push({
@@ -337,17 +280,30 @@ exports.findTopProducts = async (req, res) => {
       page_size = 12;
     }
 
+
+
+    if (Object.keys(matchStage).length > 0) {
+      filters.push({ $match: matchStage });
+    }
+
+    filters.push({
+      $sort: {
+        _id: -1,
+      }
+    });
+
+    filters.push({ $skip: skip })
+    filters.push({ $limit: page_size })
+
+
     queries.push({
       $facet: {
         metadata: [{ $count: "total" }],
-        data: [{ $skip: skip }, { $limit: page_size }],
+        data: filters,
       },
     });
 
     TopProducts.aggregate(queries)
-      .sort({
-        _id: -1,
-      })
       .allowDiskUse(true)
       .then((data) => {
         let total = 0;

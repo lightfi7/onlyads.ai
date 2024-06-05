@@ -119,7 +119,6 @@ exports.findAll = async (req, res) => {
 
     if (params.filters.product_created_at.max) {
       matchStage.$expr = {
-        ...matchStage.$expr,
         $lte: [
           "$created_at",
           {
