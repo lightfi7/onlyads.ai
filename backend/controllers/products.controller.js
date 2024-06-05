@@ -10,7 +10,6 @@ exports.findAll = async (req, res) => {
   const membership = req.membership;
 
   const queries = [];
-  const filter = []
 
   try {
     // Filtering
@@ -106,7 +105,7 @@ exports.findAll = async (req, res) => {
     }
     
     if (params.filters.store_created_at.min || params.filters.store_created_at.max) {
-      filter.push({
+      queries.push({
         $addFields: {
           storeCreatedAt: {
             $dateFromString: {
@@ -217,20 +216,17 @@ exports.findAll = async (req, res) => {
     }
 
     if (Object.keys(matchStage).length > 0) {
-      filter.push({ $match: matchStage });
+      queries.push({ $match: matchStage });
     }
 
     if (Object.keys(sort).length > 0) {
-      filter.push({ $sort: sort });
+      queries.push({ $sort: sort });
     }
-
-    filter.push({ $skip: skip })
-    filter.push({ $limit: page_size })
 
     queries.push({
       $facet: {
         metadata: [{ $count: "total" }],
-        data: que,
+        data: [{ $skip: skip }, { $limit: page_size }],
       },
     });
 

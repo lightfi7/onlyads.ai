@@ -9,7 +9,6 @@ exports.findTopStores = async (req, res) => {
   const { params } = req.body;
   const queries = [];
   const matchStage = {};
-  const filters = []
   try {
     const expired = req.expired;
     const membership = req.membership;
@@ -54,7 +53,7 @@ exports.findTopStores = async (req, res) => {
 
 
     if (params.filters.created_at.min || params.filters.created_at.max) {
-      filters.push({
+      queries.push({
         $addFields: {
           createdDate: {
             $dateFromString: {
@@ -110,22 +109,20 @@ exports.findTopStores = async (req, res) => {
     }
 
     if (Object.keys(matchStage).length > 0) {
-      filters.push({ $match: matchStage });
+      queries.push({ $match: matchStage });
     }
 
-    filters.push({
+    queries.push({
       $sort: {
         _id: -1,
       }
     });
 
-    filters.push({ $skip: skip })
-    filters.push({ $limit: page_size })
 
     queries.push({
       $facet: {
         metadata: [{ $count: "total" }],
-        data: filters,
+        data: [{$skip: skip}, {$limit: page_size}],
       },
     });
     TopStores.aggregate(queries)
@@ -167,7 +164,7 @@ exports.findTopStores = async (req, res) => {
 
 exports.findTopProducts = async (req, res) => {
   const { params } = req.body;
-  const queries = [], filters = [];
+  const queries = [];
   const matchStage = {};
   try {
     const expired = req.expired;
@@ -217,7 +214,7 @@ exports.findTopProducts = async (req, res) => {
     }
 
     if (params.filters.created_at.min || params.filters.created_at.max)
-      filters.push({
+      queries.push({
         $addFields: {
           createdDate: {
             $dateFromString: {
@@ -283,23 +280,22 @@ exports.findTopProducts = async (req, res) => {
 
 
     if (Object.keys(matchStage).length > 0) {
-      filters.push({ $match: matchStage });
+      queries.push({ $match: matchStage });
     }
 
-    filters.push({
+    queries.push({
       $sort: {
         _id: -1,
       }
     });
 
-    filters.push({ $skip: skip })
-    filters.push({ $limit: page_size })
+  
 
 
     queries.push({
       $facet: {
         metadata: [{ $count: "total" }],
-        data: filters,
+        data: [{$skip: skip}, {$limit: page_size}],
       },
     });
 
