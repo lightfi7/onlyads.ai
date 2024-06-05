@@ -9,103 +9,48 @@ exports.findAll = async (req, res) => {
       page_size = 50,
       q = "",
       categories = [],
-      price = {
-        min: null,
-        max: null,
-      },
+      price = { min: null, max: null },
       rank = "any",
     } = req.body;
 
     const expired = req.expired;
     const membership = req.membership;
 
-    const queries = [];
+    // Build the $match stage with all conditions
+    const match = {};
 
     if (q && q != "") {
-      queries.push({
-        $match: {
-          productName: new RegExp(q, "i"),
-        },
-      });
+      match.productName = new RegExp(q, "i");
     }
 
     if (categories && Array.isArray(categories) && categories.length) {
-      queries.push({
-        $match: {
-          productCategories: {
-            $in: categories.map((item) => new RegExp(item, "i")),
-          },
-        },
-      });
+      match.productCategories = { $in: categories.map((item) => new RegExp(item, "i")) };
     }
 
     if (price.min) {
-      queries.push({
-        $match: {
-          _productPrice: {
-            $gte: Number(price.min),
-          },
-        },
-      });
+      match._productPrice = { $gte: Number(price.min) };
     }
 
     if (price.max) {
-      queries.push({
-        $match: {
-          _productPrice: {
-            $lte: Number(price.max),
-          },
-        },
-      });
+      match._productPrice = { $lte: Number(price.max) };
     }
 
+    // Add rank filtering based on the 'rank' parameter
     switch (rank) {
       case ">10":
-        queries.push({
-          $match: {
-            _productOrdersRanking: {
-              $lte: 10,
-            },
-          },
-        });
+        match._productOrdersRanking = { $lte: 10 };
         break;
       case ">100":
-        queries.push({
-          $match: {
-            _productOrdersRanking: {
-              $lte: 100,
-            },
-          },
-        });
+        match._productOrdersRanking = { $lte: 100 };
         break;
       case ">500":
-        queries.push({
-          $match: {
-            _productOrdersRanking: {
-              $lte: 500,
-            },
-          },
-        });
+        match._productOrdersRanking = { $lte: 500 };
         break;
       case ">1000":
-        queries.push({
-          $match: {
-            _productOrdersRanking: {
-              $lte: 1000,
-            },
-          },
-        });
+        match._productOrdersRanking = { $lte: 1000 };
         break;
       case ">10000":
-        queries.push({
-          $match: {
-            _productOrdersRanking: {
-              $lte: 10000,
-            },
-          },
-        });
-        break;
-      default:
+        match._productOrdersRanking = { $lte: 10000 };
         break;
     }
 
@@ -118,20 +63,19 @@ exports.findAll = async (req, res) => {
       perPage = 32;
     }
 
-    queries.push({
-      $sort: {
-        _id: -1,
+    // Combine all stages into a single aggregate pipeline
+    const pipeline = [
+      { $match: match }, // Apply all filters at once
+      { $sort: { _id: -1 } }, // Sort before pagination
+      {
+        $facet: {
+          metadata: [{ $count: "total" }],
+          data: [{ $skip: skip }, { $limit: page_size }],
+        },
       },
-    });
+    ];
 
-    queries.push({
-      $facet: {
-        metadata: [{ $count: "total" }],
-        data: [{ $skip: skip }, { $limit: page_size }],
-      },
-    });
-
-    Product.aggregate(queries)
+    Product.aggregate(pipeline)
       .then((products) => {
         res.send(products);
       })
