@@ -158,19 +158,19 @@ exports.findAll = async (req, res) => {
       matchStage["store.custom_domain"] = { $regex: pattern };
     }
 
-    if (Object.keys(matchStage).length > 0) {
-      queries.push({ $match: matchStage });
-    }
+    // if (Object.keys(matchStage).length > 0) {
+    //   queries.push({ $match: matchStage });
+    // }
 
-    queries.push({
-      $addFields: {
-        storeCreatedAt: {
-          $dateFromString: {
-            dateString: "$store.created_at",
-          },
-        },
-      },
-    });
+    // queries.push({
+    //   $addFields: {
+    //     storeCreatedAt: {
+    //       $dateFromString: {
+    //         dateString: "$store.created_at",
+    //       },
+    //     },
+    //   },
+    // });
 
     // queries.push({
     //   $project: {
@@ -215,6 +215,16 @@ exports.findAll = async (req, res) => {
       $facet: {
         metadata: [{ $count: "total" }],
         data: [
+          { $match: matchStage },
+          {
+            $addFields: {
+              storeCreatedAt: {
+                $dateFromString: {
+                  dateString: "$store.created_at",
+                },
+              },
+            },
+          },
           {
             $sort: sort,
           },
