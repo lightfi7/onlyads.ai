@@ -23,193 +23,193 @@ exports.findAll = async (req, res) => {
 
     }
 
-    if (params.filters.title) {
-      const titleFilter = {};
-      if (params.filters.title.include && Array.isArray(params.filters.title.include)) {
-        titleFilter.$in = params.filters.title.include.map((item) => new RegExp(item, "i"));
-      }
-      if (params.filters.title.exclude && Array.isArray(params.filters.title.exclude)) {
-        titleFilter.$not = { $in: params.filters.title.exclude.map((item) => new RegExp(item, "i")) };
-      }
-      if (Object.keys(titleFilter).length > 0) {
-        matchConditions.title = titleFilter;
-      }
-    }
+    // if (params.filters.title) {
+    //   const titleFilter = {};
+    //   if (params.filters.title.include && Array.isArray(params.filters.title.include)) {
+    //     titleFilter.$in = params.filters.title.include.map((item) => new RegExp(item, "i"));
+    //   }
+    //   if (params.filters.title.exclude && Array.isArray(params.filters.title.exclude)) {
+    //     titleFilter.$not = { $in: params.filters.title.exclude.map((item) => new RegExp(item, "i")) };
+    //   }
+    //   if (Object.keys(titleFilter).length > 0) {
+    //     matchConditions.title = titleFilter;
+    //   }
+    // }
 
-    if (params.filters.description) {
-      const descriptionFilter = {};
-      if (params.filters.description.include && Array.isArray(params.filters.description.include)) {
-        descriptionFilter.$in = params.filters.description.include.map((item) => new RegExp(item, "i"));
-      }
-      if (params.filters.description.exclude && Array.isArray(params.filters.description.exclude)) {
-        descriptionFilter.$not = { $in: params.filters.description.exclude.map((item) => new RegExp(item, "i")) };
-      }
-      if (Object.keys(descriptionFilter).length > 0) {
-        matchConditions.handle = descriptionFilter;
-      }
-    }
+    // if (params.filters.description) {
+    //   const descriptionFilter = {};
+    //   if (params.filters.description.include && Array.isArray(params.filters.description.include)) {
+    //     descriptionFilter.$in = params.filters.description.include.map((item) => new RegExp(item, "i"));
+    //   }
+    //   if (params.filters.description.exclude && Array.isArray(params.filters.description.exclude)) {
+    //     descriptionFilter.$not = { $in: params.filters.description.exclude.map((item) => new RegExp(item, "i")) };
+    //   }
+    //   if (Object.keys(descriptionFilter).length > 0) {
+    //     matchConditions.handle = descriptionFilter;
+    //   }
+    // }
 
-    if (
-      params.filters.domain.include &&
-      Array.isArray(params.filters.domain.include)
-    ) {
-      queries.push({
-        $match: {
-          "store.custom_domain": {
-            $in: params.filters.domain.include.map(
-              (item) => new RegExp(item, "i")
-            ),
-          },
-        },
-      });
-    }
+    // if (
+    //   params.filters.domain.include &&
+    //   Array.isArray(params.filters.domain.include)
+    // ) {
+    //   queries.push({
+    //     $match: {
+    //       "store.custom_domain": {
+    //         $in: params.filters.domain.include.map(
+    //           (item) => new RegExp(item, "i")
+    //         ),
+    //       },
+    //     },
+    //   });
+    // }
 
-    if (params.filters.domain) {
-      const domainFilter = {};
-      if (params.filters.domain.include && Array.isArray(params.filters.domain.include)) {
-        domainFilter.$in = params.filters.domain.include.map((item) => new RegExp(item, "i"));
-      }
-      if (params.filters.domain.exclude && Array.isArray(params.filters.domain.exclude)) {
-        domainFilter.$not = { $in: params.filters.domain.exclude.map((item) => new RegExp(item, "i")) };
-      }
-      if (Object.keys(domainFilter).length > 0) {
-        matchConditions["store.custom_domain"] = domainFilter;
-      }
-    }
+    // if (params.filters.domain) {
+    //   const domainFilter = {};
+    //   if (params.filters.domain.include && Array.isArray(params.filters.domain.include)) {
+    //     domainFilter.$in = params.filters.domain.include.map((item) => new RegExp(item, "i"));
+    //   }
+    //   if (params.filters.domain.exclude && Array.isArray(params.filters.domain.exclude)) {
+    //     domainFilter.$not = { $in: params.filters.domain.exclude.map((item) => new RegExp(item, "i")) };
+    //   }
+    //   if (Object.keys(domainFilter).length > 0) {
+    //     matchConditions["store.custom_domain"] = domainFilter;
+    //   }
+    // }
 
-    if (params.filters.price) {
-      if (params.filters.price.max) {
-        matchConditions.usd_price = { ...matchConditions.usd_price, $lte: Number(params.filters.price.max) };
-      }
-      if (params.filters.price.min) {
-        matchConditions.usd_price = { ...matchConditions.usd_price, $gte: Number(params.filters.price.min) };
-      }
-    }
+    // if (params.filters.price) {
+    //   if (params.filters.price.max) {
+    //     matchConditions.usd_price = { ...matchConditions.usd_price, $lte: Number(params.filters.price.max) };
+    //   }
+    //   if (params.filters.price.min) {
+    //     matchConditions.usd_price = { ...matchConditions.usd_price, $gte: Number(params.filters.price.min) };
+    //   }
+    // }
 
-    if (params.filters.sales.max)
+    // if (params.filters.sales.max)
 
-      matchConditions.monthly_sales = {
-        $lte: Number(params.filters.sales.max),
-      }
-
-
-    if (params.filters.sales.min)
-      matchConditions.monthly_sales = {
-        $gte: Number(params.filters.sales.min),
-      }
+    //   matchConditions.monthly_sales = {
+    //     $lte: Number(params.filters.sales.max),
+    //   }
 
 
+    // if (params.filters.sales.min)
+    //   matchConditions.monthly_sales = {
+    //     $gte: Number(params.filters.sales.min),
+    //   }
 
-    if (params.filters.revenue.max)
-      matchConditions.monthly_revenue = {
-        $lte: Number(params.filters.revenue.max),
-      }
 
-    if (params.filters.revenue.min)
-      matchConditions.monthly_revenue = {
-        $gte: Number(params.filters.revenue.min),
-      }
 
-    if (params.filters.products.max)
-      matchConditions["store.products_count"] = {
-        $lte: Number(params.filters.products.max),
-      }
+    // if (params.filters.revenue.max)
+    //   matchConditions.monthly_revenue = {
+    //     $lte: Number(params.filters.revenue.max),
+    //   }
 
-    if (params.filters.products.min)
-      matchConditions["store.products_count"] = {
-        $gte: Number(params.filters.products.min),
-      }
+    // if (params.filters.revenue.min)
+    //   matchConditions.monthly_revenue = {
+    //     $gte: Number(params.filters.revenue.min),
+    //   }
 
-    if (params.filters.images.max)
-      matchConditions.images = {
-        $lte: Number(params.filters.images.max),
-      }
+    // if (params.filters.products.max)
+    //   matchConditions["store.products_count"] = {
+    //     $lte: Number(params.filters.products.max),
+    //   }
 
-    if (params.filters.images.min)
-      matchConditions.images = {
-        $gte: Number(params.filters.images.min),
-      }
+    // if (params.filters.products.min)
+    //   matchConditions["store.products_count"] = {
+    //     $gte: Number(params.filters.products.min),
+    //   }
 
-    if (params.filters.variants.max)
-      matchConditions.variants = {
-        $lte: Number(params.filters.variants.max),
-      }
+    // if (params.filters.images.max)
+    //   matchConditions.images = {
+    //     $lte: Number(params.filters.images.max),
+    //   }
 
-    if (params.filters.variants.min)
-      matchConditions.variants = {
-        $gte: Number(params.filters.variants.min),
-      }
+    // if (params.filters.images.min)
+    //   matchConditions.images = {
+    //     $gte: Number(params.filters.images.min),
+    //   }
 
-    if (params.filters.product_created_at.min)
-      matchConditions.$expr = {
-        $gte: [
-          "$created_at",
-          {
-            $dateFromString: {
-              dateString: params.filters.product_created_at.min,
-            },
-          },
-        ],
-      }
+    // if (params.filters.variants.max)
+    //   matchConditions.variants = {
+    //     $lte: Number(params.filters.variants.max),
+    //   }
 
-    if (params.filters.product_created_at.max)
-      matchConditions.$expr = {
-        $lte: [
-          "$created_at",
-          {
-            $dateFromString: {
-              dateString: params.filters.product_created_at.max,
-            },
-          },
-        ],
-      }
+    // if (params.filters.variants.min)
+    //   matchConditions.variants = {
+    //     $gte: Number(params.filters.variants.min),
+    //   }
 
-    queries.push({
-      $addFields: {
-        storeCreatedAt: {
-          $dateFromString: {
-            dateString: "$store.created_at",
-          },
-        },
-      },
-    });
+    // if (params.filters.product_created_at.min)
+    //   matchConditions.$expr = {
+    //     $gte: [
+    //       "$created_at",
+    //       {
+    //         $dateFromString: {
+    //           dateString: params.filters.product_created_at.min,
+    //         },
+    //       },
+    //     ],
+    //   }
 
-    if (params.filters.store_created_at.min)
-      matchConditions.$expr = {
-        $gte: [
-          "$storeCreatedAt",
-          {
-            $dateFromString: {
-              dateString: params.filters.store_created_at.min,
-            },
-          },
-        ],
-      }
+    // if (params.filters.product_created_at.max)
+    //   matchConditions.$expr = {
+    //     $lte: [
+    //       "$created_at",
+    //       {
+    //         $dateFromString: {
+    //           dateString: params.filters.product_created_at.max,
+    //         },
+    //       },
+    //     ],
+    //   }
 
-    if (params.filters.store_created_at.max)
-      matchConditions.$expr = {
-        $lte: [
-          "$storeCreatedAt",
-          {
-            $dateFromString: {
-              dateString: params.filters.store_created_at.max,
-            },
-          },
-        ],
-      }
+    // queries.push({
+    //   $addFields: {
+    //     storeCreatedAt: {
+    //       $dateFromString: {
+    //         dateString: "$store.created_at",
+    //       },
+    //     },
+    //   },
+    // });
 
-    if (params.filters.currency && Array.isArray(params.filters.currency))
-      matchConditions["store.currency"] = { $in: params.filters.currency.map((c) => c.code) }
+    // if (params.filters.store_created_at.min)
+    //   matchConditions.$expr = {
+    //     $gte: [
+    //       "$storeCreatedAt",
+    //       {
+    //         $dateFromString: {
+    //           dateString: params.filters.store_created_at.min,
+    //         },
+    //       },
+    //     ],
+    //   }
 
-    if (params.filters.domain_tld && Array.isArray(params.filters.domain_tld)) {
-      const tlds = params.filters.domain_tld
-        .map((t) => t.value.replace(/\./g, ""))
-        .join("|");
-      const pattern = new RegExp(`^.*\\.(${tlds})$`);
-      matchConditions["store.custom_domain"] = {
-        $regex: pattern,
-      }
-    }
+    // if (params.filters.store_created_at.max)
+    //   matchConditions.$expr = {
+    //     $lte: [
+    //       "$storeCreatedAt",
+    //       {
+    //         $dateFromString: {
+    //           dateString: params.filters.store_created_at.max,
+    //         },
+    //       },
+    //     ],
+    //   }
+
+    // if (params.filters.currency && Array.isArray(params.filters.currency))
+    //   matchConditions["store.currency"] = { $in: params.filters.currency.map((c) => c.code) }
+
+    // if (params.filters.domain_tld && Array.isArray(params.filters.domain_tld)) {
+    //   const tlds = params.filters.domain_tld
+    //     .map((t) => t.value.replace(/\./g, ""))
+    //     .join("|");
+    //   const pattern = new RegExp(`^.*\\.(${tlds})$`);
+    //   matchConditions["store.custom_domain"] = {
+    //     $regex: pattern,
+    //   }
+    // }
 
     queries.push(
       {
