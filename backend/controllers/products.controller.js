@@ -10,6 +10,7 @@ exports.findAll = async (req, res) => {
   const membership = req.membership;
 
   const queries = [];
+  const que = []
 
   try {
     // Filtering
@@ -103,7 +104,17 @@ exports.findAll = async (req, res) => {
         ],
       };
     }
-
+    if (params.filters.store_created_at.min || params.filters.store_created_at.max) {
+      que.push({
+        $addFields: {
+          storeCreatedAt: {
+            $dateFromString: {
+              dateString: "$store.created_at",
+            },
+          },
+        },
+      });
+    }
     if (params.filters.product_created_at.max) {
       matchStage.$expr = {
         ...matchStage.$expr,
@@ -117,7 +128,6 @@ exports.findAll = async (req, res) => {
         ],
       };
     }
-
 
 
     if (params.filters.store_created_at.min) {
@@ -205,16 +215,8 @@ exports.findAll = async (req, res) => {
       page_size = 12;
     }
 
-    que = []
-    que.push({
-      $addFields: {
-        storeCreatedAt: {
-          $dateFromString: {
-            dateString: "$store.created_at",
-          },
-        },
-      },
-    });
+    
+
     if (Object.keys(matchStage).length > 0) {
       que.push({ $match: matchStage });
 
@@ -227,7 +229,6 @@ exports.findAll = async (req, res) => {
     que.push({ $skip: skip })
     que.push({ $limit: page_size })
 
-    console.log(matchStage);
     queries.push({
       $facet: {
         metadata: [{ $count: "total" }],
