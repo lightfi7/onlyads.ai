@@ -216,19 +216,19 @@ exports.findAll = async (req, res) => {
       $facet: {
         metadata: [{ $count: "total" }],
         data: [
-          { $match: matchStage },
-          {
-            $addFields: {
-              storeCreatedAt: {
-                $dateFromString: {
-                  dateString: "$store.created_at",
-                },
-              },
-            },
-          },
-          {
-            $sort: sort,
-          },
+          // { $match: matchStage },
+          // {
+          //   $addFields: {
+          //     storeCreatedAt: {
+          //       $dateFromString: {
+          //         dateString: "$store.created_at",
+          //       },
+          //     },
+          //   },
+          // },
+          // {
+          //   $sort: sort,
+          // },
           { $skip: skip },
           { $limit: page_size },
         ],
