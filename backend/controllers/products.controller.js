@@ -379,30 +379,30 @@ exports.findAll = async (req, res) => {
       },
     });
 
-    queries.push(
-      {
-        $project: {
-          _id: 0,
-          id: "$id",
-          main_image: "$main_image",
-          name: '$name',
-          title: "$title",
-          handle: "$handle",
-          usd_price: "$usd_price",
-          monthly_sales: "$monthly_sales",
-          monthly_revenue: "$monthly_revenue",
-          original_price: '$original_price',
-          original_price_max: '$original_price_max',
-          usd_price_max: '$usd_price_max',
-          monthly_sales:'$monthly_sales',
-          store:'$store',
+    // queries.push(
+    //   {
+    //     $project: {
+    //       _id: 0,
+    //       id: "$id",
+    //       main_image: "$main_image",
+    //       name: '$name',
+    //       title: "$title",
+    //       handle: "$handle",
+    //       usd_price: "$usd_price",
+    //       monthly_sales: "$monthly_sales",
+    //       monthly_revenue: "$monthly_revenue",
+    //       original_price: '$original_price',
+    //       original_price_max: '$original_price_max',
+    //       usd_price_max: '$usd_price_max',
+    //       monthly_sales:'$monthly_sales',
+    //       store:'$store',
 
-        }
-      }
-    )
+    //     }
+    //   }
+    // )
 
     Product.aggregate(queries)
-      .allowDiskUse(true)
+      // .allowDiskUse(true)
       .then((data) => {
         let total = 0;
         if (data[0].metadata.length) total = data[0].metadata[0].total;
