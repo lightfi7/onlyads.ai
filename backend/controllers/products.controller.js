@@ -219,11 +219,7 @@ exports.findAll = async (req, res) => {
     queries.push({
       $facet: {
         metadata: [{ $count: "total" }],
-        data: [{
-          $sort: {
-            created_at: -1,
-          }
-        }, { $skip: skip }, { $limit: page_size }],
+        data: [{ $skip: skip }, { $limit: page_size }],
       },
     });
 
