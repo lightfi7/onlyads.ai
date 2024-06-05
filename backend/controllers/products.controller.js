@@ -118,6 +118,8 @@ exports.findAll = async (req, res) => {
       };
     }
 
+
+
     if (params.filters.store_created_at.min) {
       matchStage.$expr = {
         ...matchStage.$expr,
@@ -162,15 +164,7 @@ exports.findAll = async (req, res) => {
     //   queries.push({ $match: matchStage });
     // }
 
-    // queries.push({
-    //   $addFields: {
-    //     storeCreatedAt: {
-    //       $dateFromString: {
-    //         dateString: "$store.created_at",
-    //       },
-    //     },
-    //   },
-    // });
+
 
     // queries.push({
     //   $project: {
@@ -211,27 +205,33 @@ exports.findAll = async (req, res) => {
       page_size = 12;
     }
 
+    que = []
+    que.push({
+      $addFields: {
+        storeCreatedAt: {
+          $dateFromString: {
+            dateString: "$store.created_at",
+          },
+        },
+      },
+    });
+    if (Object.keys(matchStage).length > 0) {
+      que.push({ $match: matchStage });
+
+    }
+
+    if (Object.keys(sort).length > 0) {
+      que.push({ $sort: sort });
+    }
+
+    que.push({ $skip: skip })
+    que.push({ $limit: page_size })
+
     console.log(matchStage);
     queries.push({
       $facet: {
         metadata: [{ $count: "total" }],
-        data: [
-          // { $match: matchStage },
-          // {
-          //   $addFields: {
-          //     storeCreatedAt: {
-          //       $dateFromString: {
-          //         dateString: "$store.created_at",
-          //       },
-          //     },
-          //   },
-          // },
-          // {
-          //   $sort: sort,
-          // },
-          { $skip: skip },
-          { $limit: page_size },
-        ],
+        data: que,
       },
     });
 
