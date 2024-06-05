@@ -234,20 +234,20 @@ exports.findAll = async (req, res) => {
     )
 
     // Sorting
-    // let sort = params.ordering;
+    let sort = params.ordering;
 
-    // if (Array.isArray(sort)) sort = {};
+    if (Array.isArray(sort)) sort = {};
 
-    // if (Object.keys(sort).length > 0)
-    //   queries.push({
-    //     $sort: sort,
-    //   });
-    // else
-    //   queries.push({
-    //     $sort: {
-    //       created_at: -1,
-    //     },
-    //   });
+    if (Object.keys(sort).length > 0)
+      queries.push({
+        $sort: sort,
+      });
+    else
+      queries.push({
+        $sort: {
+          created_at: -1,
+        },
+      });
 
     let skip = params.page_size * (params.page - 1) || 0;
     if (skip < 1) skip = 0;
