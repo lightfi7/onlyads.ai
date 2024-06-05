@@ -198,7 +198,7 @@ exports.findAll = async (req, res) => {
 
     if (Object.keys(sort).length == 0)
       sort = {
-        created_at: -1,
+        created_at: 1,
       }
 
     let skip = params.page_size * (params.page - 1) || 0;
