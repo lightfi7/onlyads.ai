@@ -345,7 +345,7 @@ exports.findAll = async (req, res) => {
         }
       }
     )
-    
+
     // Sorting
     let sort = params.ordering;
 
@@ -382,7 +382,7 @@ exports.findAll = async (req, res) => {
     });
 
     Product.aggregate(queries)
-      .allowDiskUse(true)
+      // .allowDiskUse(true)
       .then((data) => {
         let total = 0;
         if (data[0].metadata.length) total = data[0].metadata[0].total;
