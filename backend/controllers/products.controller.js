@@ -211,6 +211,7 @@ exports.findAll = async (req, res) => {
       page_size = 12;
     }
 
+    console.log(matchStage);
     queries.push({
       $facet: {
         metadata: [{ $count: "total" }],
