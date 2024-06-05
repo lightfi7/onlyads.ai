@@ -187,6 +187,7 @@ exports.findAll = async (req, res) => {
         original_price_max: "$original_price_max",
         usd_price_max: "$usd_price_max",
         store: "$store",
+        created_at: '$created_at',
       },
     });
 
