@@ -22,7 +22,7 @@ mongoose
 (async () => {
 
   for (let i = 0; ; i++) {
-    const products = await TopProduct.find({}).skip(i * 10000).limit(i * 10000 + 10000);
+    const products = await TopStore.find({}).skip(i * 10000).limit(i * 10000 + 10000);
     console.log(i)
     if (products.length === 0) break;
     for (const product of products) {
