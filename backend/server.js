@@ -24,11 +24,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 mongoose
-  .connect("mongodb://app.onlyads.ai:27017", {
+  .connect("mongodb://144.91.126.113:27017/", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    dbName: "mydatabase",
-    user: "root",
+    dbName: "onlyads",
+    user: "devman",
     pass: "mari2Ana23sem",
   })
   .then(() => {

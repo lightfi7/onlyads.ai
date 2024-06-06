@@ -25,6 +25,7 @@ var storeSchema = mongoose.Schema({
   quarter_sales: Number,
   quarter_revenue: Number,
   aggregations: {},
+  chart2: {type: mongoose.Schema.Types.ObjectId, ref: 'chart2s'},
   facebook_add_library: String,
   is_tracked: Boolean,
   is_locked: Boolean,

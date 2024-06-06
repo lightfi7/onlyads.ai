@@ -171,11 +171,6 @@ exports.findTopProducts = async (req, res) => {
     const membership = req.membership;
 
     if (params.filters.q && params.filters.q != "") {
-      queries.push({
-        $match: {
-          title: new RegExp(params.filters.q, "i"),
-        },
-      });
       matchStage.title = new RegExp(params.filters.q, "i")
     }
 
@@ -212,7 +207,7 @@ exports.findTopProducts = async (req, res) => {
       }
       matchStage.usd_price = priceFilter;
     }
-
+    
     if (params.filters.created_at.min || params.filters.created_at.max)
       queries.push({
         $addFields: {

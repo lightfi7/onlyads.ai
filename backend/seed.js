@@ -1,11 +1,14 @@
 const mongoose = require("mongoose");
+const Chart2 = require("./models/sales-tracker/chart2.model");
+const TopProduct = require("./models/sales-tracker/topproduct.model");
+const TopStore = require("./models/sales-tracker/topstore.model");
 
 mongoose
-  .connect("mongodb://app.onlyads.ai:27017", {
+  .connect("mongodb://144.91.126.113:27017/", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    dbName: "mydatabase",
-    user: "root",
+    dbName: "onlyads",
+    user: "devman",
     pass: "mari2Ana23sem",
   })
   .then(() => {
@@ -16,37 +19,18 @@ mongoose
     process.exit();
   });
 
-var productSchema = mongoose.Schema({
-  storeId: { type: String, index: true },
-  store: {},
-  title: String,
-  handle: String,
-  images: Number,
-  variants: Number,
-  main_image: String,
-  original_price: String,
-  usd_price: Number,
-  created_at: { type: String, index: true },
-});
-
-const StoreProduct = mongoose.model("storeproducts", productSchema);
-
 (async () => {
-  setTimeout(() => {
-    // Assuming `StoreProduct` is your Mongoose model
-    StoreProduct.aggregate([
-        { $match: { "store.id": { $exists: true } } }, // Match documents where store.id exists
-        { $addFields: { storeId: "$store.id" } }, // Add/Update the storeId field
-        {
-          $merge: {
-            into: "storeproducts", // Merge results back into the original collection
-            on: "_id", // Use the _id field to match documents
-            whenMatched: "replace", // Replace the whole document
-            whenNotMatched: "discard" // Discard if there's no match (shouldn't happen in this case)
-          }
-        }
-      ]).exec()
-      .then(() => console.log("Documents updated."))
-      .catch((error) => console.error("Error updating documents:", error));
-  }, 1000);
+
+  for (let i = 0; ; i++) {
+    const products = await TopProduct.find({}).skip(i * 10000).limit(i * 10000 + 10000);
+    console.log(i)
+    if (products.length === 0) break;
+    for (const product of products) {
+      const chart2 = new Chart2(product.aggregations);
+      await chart2.save();
+      product.chart2 = chart2._id;
+      await product.save();
+      console.log(product);
+    }
+  }
 })();
