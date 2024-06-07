@@ -306,61 +306,40 @@ exports.findTopProducts = async (req, res) => {
     queries.push({
       $facet: {
         metadata: [{ $count: "total" }],
-        data: [{ $limit: skip }, { $limit: page_size }],
+        data: [{ $limit: skip }, { $limit: page_size },
+        {
+          $lookup: {
+            from: "chart2s", // The collection to join
+            localField: "chart2", // Field from the input documents
+            foreignField: "_id", // Field from the documents of the "from" collection
+            as: "aggregations", // Output array field
+          },
+        }
+
+        ],
       },
     });
 
-
-
-    TopProducts.aggregate([
-      {
-        $match: {
-          $or: [
-            { title: new RegExp(params.filters.q, "i") },
-            { month_sales: { $gte: Number(params.filters.sales.min), $lte: Number(params.filters.sales.max) } },
-            { month_revenue: { $gte: Number(params.filters.revenue.min), $lte: Number(params.filters.revenue.max) } },
-            { usd_price: { $gte: Number(params.filters.price.min), $lte: Number(params.filters.price.max) } },
-            {
-              createdDate: {
-                $gte: {
-                  $dateFromString: {
-                    dateString: params.filters.created_at.min,
-                  },
-                },
-              },
-              $or: [
-                {
-                  createdDate: {
-                    $lte: {
-                      $dateFromString: {
-                        dateString: params.filters.created_at.max,
-                      },
-                    },
-                  },
-                },
-              ],
-            },
-            {
-              store: {
-                languages: {
-                  $in: params.filters.languages.map((item) => new RegExp(item.code, "i")),
-                },
-              },
-            },
-          ],
-        },
-      },
-      {
-        $facet: {
-          metadata: [{ $count: "total" }],
-          data: [{ $sort: { _id: -1 } }, { $limit: params.page_size }],
-        },
-      },
-    ])
+    TopProducts.aggregate(queries)
       .allowDiskUse(true)
       .then((data) => {
         let total = 0;
         if (data[0].metadata.length) total = data[0].metadata[0].total;
+        if (req.role == "user") {
+          // switch (membership?.type) {
+          //   case "Basic":
+          //     total = total > 200 ? 200 : total;
+          //     break;
+          //   case "Standard":
+          //     total = total > 2000 ? 2000 : total;
+          //     break;
+          //   case "Enterprise":
+          //     total = total > 5000 ? 5000 : total;
+          //     break;
+          //   default:
+          //     break;
+          // }
+        }
         res.status(200).send([
           {
             metadata: [
@@ -372,7 +351,6 @@ exports.findTopProducts = async (req, res) => {
           },
         ]);
       });
-
   } catch (err) {
     console.log(err);
     res.status(500).send("Faild to fetch top products!");
