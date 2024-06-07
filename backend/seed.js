@@ -19,20 +19,20 @@ mongoose
     });
 
 (async () => {
-    await TopStore.updateMany({}, {$unset: {best_selling_product: ''}});
-    // for (let i = 0; ; i++) {
-    //     const products = await TopStore.find({}).skip(i * 10000).limit(10000);
-    //     console.log(i)
-    //     if (products.length === 0) break;
-    //     for (let j = 0; j < products.length; j++) {
-    //         const product = products[j];
-    //         const chart2 = new BestSellingProduct(product.best_selling_products);
-    //         await chart2.save();
-    //         product.best_selling_product = chart2._id;
-    //         await product.save();
-    //         // console.log(product);
-    //     }
-    // }
+    // await TopStore.updateMany({}, {$unset: {best_selling_products: ''}});
+    for (let i = 0; ; i++) {
+        const products = await TopStore.find({}).skip(i * 10000).limit(10000);
+        console.log(i)
+        if (products.length === 0) break;
+        for (let j = 0; j < products.length; j++) {
+            const product = products[j];
+            const chart2 = new BestSellingProduct(product.best_selling_products);
+            await chart2.save();
+            product.best_selling_product = chart2._id;
+            await product.save();
+            // console.log(product);
+        }
+    }
 
     console.log(';)')
 })();

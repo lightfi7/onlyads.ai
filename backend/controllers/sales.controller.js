@@ -131,6 +131,15 @@ exports.findTopStores = async (req, res) => {
           },
         }, {
           $unwind: "$aggregations"
+        }, {
+          $lookup: {
+            from: "bsproducts", // The collection to join
+            localField: "best_selling_product", // Field from the input documents
+            foreignField: "_id", // Field from the documents of the "from" collection
+            as: "best_selling_products", // Output array field
+          },
+        }, {
+          $unwind: "$best_selling_products"
         }],
       },
     });
