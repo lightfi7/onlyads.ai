@@ -17,6 +17,7 @@ var storeSchema = mongoose.Schema({
   products_count: Number,
   tracked_by: String,
   best_selling_products: {},
+  best_selling_product: {type: mongoose.Schema.Types.ObjectId, ref: 'bsproducts'},
   random_sort: String,
   week_sales: Number,
   week_revenue: Number,
