@@ -121,7 +121,7 @@ exports.findTopStores = async (req, res) => {
     queries.push({
       $skip: skip
     })
-    
+
     queries.push({
       $limit: page_size
     })
@@ -299,6 +299,14 @@ exports.findTopProducts = async (req, res) => {
     });
 
     queries.push({
+      $skip: skip
+    })
+    
+    queries.push({
+      $limit: page_size
+    })
+
+    queries.push({
       $lookup: {
         from: "chart2s", // The collection to join
         localField: "chart2", // Field from the input documents
@@ -314,7 +322,7 @@ exports.findTopProducts = async (req, res) => {
     queries.push({
       $facet: {
         metadata: [{ $count: "total" }],
-        data: [{ $skip: skip }, { $limit: page_size }],
+        data: [],
       },
     });
 
