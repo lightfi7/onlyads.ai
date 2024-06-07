@@ -118,33 +118,23 @@ exports.findTopStores = async (req, res) => {
       }
     });
 
-    queries.push({
-      $skip: skip
-    })
-
-    queries.push({
-      $limit: page_size
-    })
-
-    queries.push({
-      $lookup: {
-        from: "chart2s", // The collection to join
-        localField: "chart2", // Field from the input documents
-        foreignField: "_id", // Field from the documents of the "from" collection
-        as: "aggregations", // Output array field
-      },
-    })
-
-    queries.push({
-      $unwind: "$aggregations"
-    })
 
     queries.push({
       $facet: {
         metadata: [{ $count: "total" }],
-        data: [],
+        data: [{ $limit: skip }, { $limit: page_size }, {
+          $lookup: {
+            from: "chart2s", // The collection to join
+            localField: "chart2", // Field from the input documents
+            foreignField: "_id", // Field from the documents of the "from" collection
+            as: "aggregations", // Output array field
+          }
+        }, {
+          $unwind: "$aggregations"
+        }],
       },
     });
+    
     TopStores.aggregate(queries)
       .allowDiskUse(true)
       .then((data) => {
@@ -297,41 +287,22 @@ exports.findTopProducts = async (req, res) => {
         _id: -1,
       }
     });
-    
+
     queries.push({
       $facet: {
         metadata: [{ $count: "total" }],
-        data: [],
+        data: [{ $limit: skip }, { $limit: page_size }, {
+          $lookup: {
+            from: "chart2s", // The collection to join
+            localField: "chart2", // Field from the input documents
+            foreignField: "_id", // Field from the documents of the "from" collection
+            as: "aggregations", // Output array field
+          }
+        }, {
+          $unwind: "$aggregations"
+        }],
       },
     });
-
-    queries.push({
-      $skip: skip
-    })
-    
-    queries.push({
-      $limit: page_size
-    })
-
-    queries.push({
-      $lookup: {
-        from: "chart2s", // The collection to join
-        localField: "chart2", // Field from the input documents
-        foreignField: "_id", // Field from the documents of the "from" collection
-        as: "aggregations", // Output array field
-      },
-    })
-
-    queries.push({
-      $unwind: "$aggregations"
-    })
-
-    // queries.push({
-    //   $facet: {
-    //     metadata: [{ $count: "total" }],
-    //     data: [],
-    //   },
-    // });
 
     TopProducts.aggregate(queries)
       .allowDiskUse(true)
