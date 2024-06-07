@@ -291,8 +291,6 @@ exports.findTopProducts = async (req, res) => {
       }
     });
 
-
-
     queries.push({
       $lookup: {
         from: "chart2s", // The collection to join
