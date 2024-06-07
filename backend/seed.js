@@ -29,7 +29,7 @@ mongoose
             await chart2.save();
             product.best_selling_product = chart2._id;
             await product.save();
-            console.log(product);
+            // console.log(product);
         }
     }
 
