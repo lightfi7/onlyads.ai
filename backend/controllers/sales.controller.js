@@ -277,15 +277,15 @@ exports.findTopProducts = async (req, res) => {
     }
 
 
-    // if (Object.keys(matchStage).length > 0) {
-    //   queries.push({ $match: matchStage });
-    // }
+    if (Object.keys(matchStage).length > 0) {
+      queries.push({ $match: matchStage });
+    }
 
-    // queries.push({
-    //   $sort: {
-    //     _id: -1,
-    //   }
-    // });
+    queries.push({
+      $sort: {
+        _id: -1,
+      }
+    });
 
     queries.push({
       $facet: {
