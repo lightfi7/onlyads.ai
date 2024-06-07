@@ -22,4 +22,5 @@ mongoose
 (async () => {
   await TopStore.updateMany({}, { $unset: { aggregations: '' } })
   await TopProduct.updateMany({}, { $unset: { aggregations: '' } })
+  console.log(';)')
 })();
