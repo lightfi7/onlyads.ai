@@ -277,28 +277,15 @@ exports.findTopProducts = async (req, res) => {
     }
 
 
-    if (Object.keys(matchStage).length > 0) {
-      queries.push({ $match: matchStage });
-    }
-
-    queries.push({
-      $sort: {
-        _id: -1,
-      }
-    });
+    // if (Object.keys(matchStage).length > 0) {
+    //   queries.push({ $match: matchStage });
+    // }
 
     // queries.push({
-    //   $lookup: {
-    //     from: "chart2s", // The collection to join
-    //     localField: "chart2", // Field from the input documents
-    //     foreignField: "_id", // Field from the documents of the "from" collection
-    //     as: "aggregations", // Output array field
-    //   },
-    // })
-
-    // queries.push({
-    //   $unwind: "$aggregations"
-    // })
+    //   $sort: {
+    //     _id: -1,
+    //   }
+    // });
 
     queries.push({
       $facet: {
