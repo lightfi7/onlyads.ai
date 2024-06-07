@@ -280,7 +280,6 @@ exports.findTopProducts = async (req, res) => {
     }
 
 
-
     if (Object.keys(matchStage).length > 0) {
       queries.push({ $match: matchStage });
     }
