@@ -20,17 +20,6 @@ mongoose
   });
 
 (async () => {
-
-  for (let i = 0; ; i++) {
-    const products = await TopStore.find({}).skip(i * 10000).limit(i * 10000 + 10000);
-    console.log(i)
-    if (products.length === 0) break;
-    for (const product of products) {
-      const chart2 = new Chart2(product.aggregations);
-      await chart2.save();
-      product.chart2 = chart2._id;
-      await product.save();
-      console.log(product);
-    }
-  }
+  await TopStore.update({}, { $unset: { aggregations: '' } })
+  await TopProduct.update({}, { $unset: { aggregations: '' } })
 })();
