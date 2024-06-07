@@ -19,11 +19,8 @@ mongoose
     });
 
 (async () => {
-    await TopStore.updateMany({}, { $unset: { aggregations: '' } })
-    await TopProduct.updateMany({}, { $unset: { aggregations: '' } })
-
     for (let i = 0; ; i++) {
-        const products = await TopStore.find({}).skip(i * 10000).limit(i * 10000 + 10000);
+        const products = await TopStore.find({}).skip(i * 10000).limit(10000);
         console.log(i)
         if (products.length === 0) break;
         for (let j = 0; j < products.length; j++) {
