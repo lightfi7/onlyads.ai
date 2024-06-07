@@ -118,11 +118,23 @@ exports.findTopStores = async (req, res) => {
       }
     });
 
+    queries.push({
+      $lookup: {
+        from: "chart2s", // The collection to join
+        localField: "chart2", // Field from the input documents
+        foreignField: "_id", // Field from the documents of the "from" collection
+        as: "aggregations", // Output array field
+      },
+    })
+    
+    queries.push({
+      $unwind: "$aggregations"
+    })
 
     queries.push({
       $facet: {
         metadata: [{ $count: "total" }],
-        data: [{$skip: skip}, {$limit: page_size}],
+        data: [{ $skip: skip }, { $limit: page_size }],
       },
     });
     TopStores.aggregate(queries)
@@ -207,7 +219,7 @@ exports.findTopProducts = async (req, res) => {
       }
       matchStage.usd_price = priceFilter;
     }
-    
+
     if (params.filters.created_at.min || params.filters.created_at.max)
       queries.push({
         $addFields: {
@@ -256,12 +268,6 @@ exports.findTopProducts = async (req, res) => {
       }
     }
 
-    // queries.push({
-    //   $sort: {
-    //     createdDate: -1,
-    //   },
-    // });
-
     let skip = params.page_size * (params.page - 1) || 0;
     if (skip < 1) skip = 0;
 
@@ -274,20 +280,33 @@ exports.findTopProducts = async (req, res) => {
 
 
 
-    // if (Object.keys(matchStage).length > 0) {
-    //   queries.push({ $match: matchStage });
-    // }
+    if (Object.keys(matchStage).length > 0) {
+      queries.push({ $match: matchStage });
+    }
 
-    // queries.push({
-    //   $sort: {
-    //     _id: -1,
-    //   }
-    // });
+    queries.push({
+      $sort: {
+        _id: -1,
+      }
+    });
+
+    queries.push({
+      $lookup: {
+        from: "chart2s", // The collection to join
+        localField: "chart2", // Field from the input documents
+        foreignField: "_id", // Field from the documents of the "from" collection
+        as: "aggregations", // Output array field
+      },
+    })
+
+    queries.push({
+      $unwind: "$aggregations"
+    })
 
     queries.push({
       $facet: {
         metadata: [{ $count: "total" }],
-        data: [{$skip: skip}, {$limit: page_size}],
+        data: [{ $skip: skip }, { $limit: page_size }],
       },
     });
 
