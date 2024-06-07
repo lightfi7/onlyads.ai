@@ -26,7 +26,7 @@ exports.findTopStores = async (req, res) => {
       if (params.filters.sales.min) {
         salesFilter.$gte = Number(params.filters.sales.min);
       }
-      matchStage.monthly_sales = salesFilter
+      matchStage.month_sales = salesFilter
     }
 
     if (params.filters.revenue.max || params.filters.revenue.min) {
@@ -37,7 +37,7 @@ exports.findTopStores = async (req, res) => {
       if (params.filters.revenue.min) {
         revenueFilter.$gte = Number(params.filters.revenue.min);
       }
-      matchStage.monthly_revenue = revenueFilter;
+      matchStage.month_revenue = revenueFilter;
     }
 
     if (params.filters.products.min || params.filters.products.max) {
@@ -203,7 +203,7 @@ exports.findTopProducts = async (req, res) => {
       if (params.filters.sales.min) {
         salesFilter.$gte = Number(params.filters.sales.min);
       }
-      matchStage.monthly_sales = salesFilter;
+      matchStage.month_sales = salesFilter;
     }
 
     if (params.filters.revenue.max || params.filters.revenue.min) {
@@ -214,7 +214,7 @@ exports.findTopProducts = async (req, res) => {
       if (params.filters.revenue.min) {
         revenueFilter.$gte = Number(params.filters.revenue.min);
       }
-      matchStage.monthly_revenue = revenueFilter;
+      matchStage.month_revenue = revenueFilter;
     }
 
     if (params.filters.price.min || params.filters.price.max) {
