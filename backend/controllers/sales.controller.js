@@ -297,6 +297,13 @@ exports.findTopProducts = async (req, res) => {
         _id: -1,
       }
     });
+    
+    queries.push({
+      $facet: {
+        metadata: [{ $count: "total" }],
+        data: [],
+      },
+    });
 
     queries.push({
       $skip: skip
@@ -319,12 +326,12 @@ exports.findTopProducts = async (req, res) => {
       $unwind: "$aggregations"
     })
 
-    queries.push({
-      $facet: {
-        metadata: [{ $count: "total" }],
-        data: [],
-      },
-    });
+    // queries.push({
+    //   $facet: {
+    //     metadata: [{ $count: "total" }],
+    //     data: [],
+    //   },
+    // });
 
     TopProducts.aggregate(queries)
       .allowDiskUse(true)
