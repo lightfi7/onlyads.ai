@@ -288,21 +288,28 @@ exports.findTopProducts = async (req, res) => {
       }
     });
 
+
     queries.push({
       $facet: {
         metadata: [{ $count: "total" }],
-        data: [{ $limit: skip }, { $limit: page_size }, {
-          $lookup: {
-            from: "chart2s", // The collection to join
-            localField: "chart2", // Field from the input documents
-            foreignField: "_id", // Field from the documents of the "from" collection
-            as: "aggregations", // Output array field
-          }
-        }, {
-          $unwind: "$aggregations"
-        }],
+        data: [{ $limit: skip }, { $limit: page_size }],
       },
     });
+
+
+    queries.push({
+      $lookup: {
+        from: "chart2s", // The collection to join
+        localField: "chart2", // Field from the input documents
+        foreignField: "_id", // Field from the documents of the "from" collection
+        as: "aggregations", // Output array field
+      },
+    })
+
+    queries.push({
+      $unwind: "$aggregations"
+    })
+
 
     TopProducts.aggregate(queries)
       .allowDiskUse(true)
