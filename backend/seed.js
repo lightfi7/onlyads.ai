@@ -20,6 +20,6 @@ mongoose
   });
 
 (async () => {
-  await TopStore.update({}, { $unset: { aggregations: '' } })
-  await TopProduct.update({}, { $unset: { aggregations: '' } })
+  await TopStore.updateMany({}, { $unset: { aggregations: '' } })
+  await TopProduct.updateMany({}, { $unset: { aggregations: '' } })
 })();
