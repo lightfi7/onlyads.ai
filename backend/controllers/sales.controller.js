@@ -92,12 +92,6 @@ exports.findTopStores = async (req, res) => {
       }
     }
 
-    // queries.push({
-    //   $sort: {
-    //     createdDate: -1,
-    //   },
-    // });
-
     let skip = params.page_size * (params.page - 1) || 0;
     if (skip < 1) skip = 0;
 
@@ -124,19 +118,19 @@ exports.findTopStores = async (req, res) => {
         metadata: [{ $count: "total" }],
         data: [{ $skip: skip }, { $limit: page_size }, {
           $lookup: {
-            from: "chart2s", // The collection to join
-            localField: "chart2", // Field from the input documents
-            foreignField: "_id", // Field from the documents of the "from" collection
-            as: "aggregations", // Output array field
+            from: "chart2s",
+            localField: "chart2",
+            foreignField: "_id", 
+            as: "aggregations",
           },
         }, {
           $unwind: "$aggregations"
         }, {
           $lookup: {
-            from: "bsproducts", // The collection to join
-            localField: "best_selling_product", // Field from the input documents
-            foreignField: "_id", // Field from the documents of the "from" collection
-            as: "best_selling_products", // Output array field
+            from: "bsproducts",
+            localField: "best_selling_product",
+            foreignField: "_id",
+            as: "best_selling_products",
           },
         }, {
           $unwind: "$best_selling_products"
@@ -149,21 +143,7 @@ exports.findTopStores = async (req, res) => {
       .then((data) => {
         let total = 0;
         if (data[0].metadata.length) total = data[0].metadata[0].total;
-        if (req.role == "user") {
-          // switch (membership?.type) {
-          //   case "Basic":
-          //     total = total > 200 ? 200 : total;
-          //     break;
-          //   case "Standard":
-          //     total = total > 2000 ? 2000 : total;
-          //     break;
-          //   case "Enterprise":
-          //     total = total > 5000 ? 5000 : total;
-          //     break;
-          //   default:
-          //     break;
-          // }
-        }
+       
         res.status(200).send([
           {
             metadata: [

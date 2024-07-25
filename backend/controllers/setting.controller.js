@@ -127,8 +127,8 @@ exports.backup = (req, res) => {
       console.error(`Backup process exited with error: ${error}`);
       res.status(400).send("Backup process exited with error");
     } else {
-      const filePath = "./backup/backup.archive"; // Specify the path to the file you want to download
-      const fileName = "backup.archive"; // Specify the name you want the downloaded file to have
+      const filePath = "./backup/backup.archive";
+      const fileName = "backup.archive";
 
       res.setHeader(
         "Content-Disposition",

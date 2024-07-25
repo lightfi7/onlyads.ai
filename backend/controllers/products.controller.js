@@ -12,7 +12,6 @@ exports.findAll = async (req, res) => {
   const queries = [];
 
   try {
-    // Filtering
     const matchStage = {};
 
     if (params.filters.categories.length > 0 && params.filters.categories.length != 20) {
@@ -170,32 +169,6 @@ exports.findAll = async (req, res) => {
       matchStage["store.custom_domain"] = { $regex: pattern };
     }
 
-    // if (Object.keys(matchStage).length > 0) {
-    //   queries.push({ $match: matchStage });
-    // }
-
-
-
-    // queries.push({
-    //   $project: {
-    //     _id: 0,
-    //     id: "$id",
-    //     main_image: "$main_image",
-    //     name: "$name",
-    //     title: "$title",
-    //     handle: "$handle",
-    //     usd_price: "$usd_price",
-    //     monthly_sales: "$monthly_sales",
-    //     monthly_revenue: "$monthly_revenue",
-    //     original_price: "$original_price",
-    //     original_price_max: "$original_price_max",
-    //     usd_price_max: "$usd_price_max",
-    //     store: "$store",
-    //     created_at: '$created_at',
-    //   },
-    // });
-
-    // Sorting
     let sort = params.ordering;
 
     if (Array.isArray(sort)) sort = {};
@@ -235,21 +208,6 @@ exports.findAll = async (req, res) => {
       .then((data) => {
         let total = 0;
         if (data[0].metadata.length) total = data[0].metadata[0].total;
-        if (req.role == "user") {
-          // switch (membership?.type) {
-          //   case "Basic":
-          //     total = total > 200 ? 200 : total;
-          //     break;
-          //   case "Standard":
-          //     total = total > 2000 ? 2000 : total;
-          //     break;
-          //   case "Enterprise":
-          //     total = total > 5000 ? 5000 : total;
-          //     break;
-          //   default:
-          //     break;
-          // }
-        }
         res.status(200).send([
           {
             metadata: [

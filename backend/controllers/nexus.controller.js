@@ -4,192 +4,6 @@ const Supplier = require("../models/nexus/supplier.model");
 const Trend = require("../models/nexus/trend.model");
 const NexusProduct = db.nexus_product;
 
-// exports.findAll = async (req, res) => {
-//   try {
-//     let {
-//       page = 0,
-//       page_size = 50,
-//       q = "",
-//       ship_from = [],
-//       categories = [],
-//       price = {
-//         min: null,
-//         max: null,
-//       },
-//       orders = {
-//         min: null,
-//         max: null,
-//       },
-//       store_selling = {
-//         min: null,
-//         max: null,
-//       },
-//       field = "all",
-//     } = req.body;
-
-//     const expired = req.expired;
-//     const membership = req.membership;
-
-//     const queries = [];
-
-//     if (q && q != "") {
-//       queries.push({
-//         $match: {
-//           productName: new RegExp(q, "i"),
-//         },
-//       });
-//     }
-
-//     switch (field) {
-//       case "all":
-//         break;
-//       case "trend":
-//         queries.push({
-//           $match: {
-//             trend: true,
-//           },
-//         });
-//         break;
-//       case "rise":
-//         queries.push({
-//           $match: {
-//             rise: true,
-//           },
-//         });
-//         break;
-//       case "hot":
-//         queries.push({
-//           $match: {
-//             hot: true,
-//           },
-//         });
-//         break;
-//       case "new":
-//         queries.push({
-//           $match: {
-//             new: true,
-//           },
-//         });
-//         break;
-//     }
-
-//     if (ship_from && Array.isArray(ship_from) && ship_from.length) {
-//       queries.push({
-//         $match: {
-//           productShips: {
-//             $in: ship_from.map((item) => new RegExp(item, "i")),
-//           },
-//         },
-//       });
-//     }
-
-//     if (categories && Array.isArray(categories) && categories.length) {
-//       queries.push({
-//         $match: {
-//           productCategories: {
-//             $in: categories.map((item) => new RegExp(item, "i")),
-//           },
-//         },
-//       });
-//     }
-
-//     if (price.min) {
-//       queries.push({
-//         $match: {
-//           _productPrice: {
-//             $gte: Number(price.min),
-//           },
-//         },
-//       });
-//     }
-
-//     if (price.max) {
-//       queries.push({
-//         $match: {
-//           _productPrice: {
-//             $lte: Number(price.max),
-//           },
-//         },
-//       });
-//     }
-
-//     if (orders.min) {
-//       queries.push({
-//         $match: {
-//           productOrders: {
-//             $gte: Number(orders.min),
-//           },
-//         },
-//       });
-//     }
-
-//     if (orders.max) {
-//       queries.push({
-//         $match: {
-//           productOrders: {
-//             $lte: Number(orders.max),
-//           },
-//         },
-//       });
-//     }
-
-//     if (store_selling.min) {
-//       queries.push({
-//         $match: {
-//           productStoreSellingCount: {
-//             $gte: Number(store_selling.min),
-//           },
-//         },
-//       });
-//     }
-
-//     if (store_selling.max) {
-//       queries.push({
-//         $match: {
-//           productStoreSellingCount: {
-//             $lte: Number(store_selling.max),
-//           },
-//         },
-//       });
-//     }
-
-//     page_size = Number(page_size) || 50;
-//     let skip = page_size * page;
-//     if (skip < 1) skip = 0;
-
-//     if (expired && req.role == "user") {
-//       skip = 0;
-//       perPage = 32;
-//     }
-
-//     queries.push({
-//       $sort: {
-//         _id: -1,
-//       },
-//     });
-
-//     queries.push({
-//       $facet: {
-//         metadata: [{ $count: "total" }],
-//         data: [{ $skip: skip }, { $limit: page_size }],
-//       },
-//     });
-
-//     NexusProduct.aggregate(queries)
-//       .then((products) => {
-//         res.send(products);
-//       })
-//       .catch((err) => {
-//         console.log(err);
-//         res.status(500).send(err);
-//       });
-//   } catch (err) {
-//     console.log(err);
-//     res.status(500).send("!");
-//   }
-// };
-
-
 exports.findAll = async (req, res) => {
   try {
     let {
@@ -207,7 +21,6 @@ exports.findAll = async (req, res) => {
     const expired = req.expired;
     const membership = req.membership;
 
-    // Build the $match stage with all conditions
     const match = {};
 
     if (q && q != "") {
@@ -270,10 +83,9 @@ exports.findAll = async (req, res) => {
       perPage = 32;
     }
 
-    // Combine all stages into a single aggregate pipeline
     const pipeline = [
-      { $match: match }, // Apply all filters at once
-      { $sort: { _id: -1 } }, // Sort before pagination
+      { $match: match },
+      { $sort: { _id: -1 } },
       {
         $facet: {
           metadata: [{ $count: "total" }],

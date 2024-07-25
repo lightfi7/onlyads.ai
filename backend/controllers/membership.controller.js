@@ -39,10 +39,6 @@ exports.create = (req, res) => {
       break;
   }
 
-  // if(req.body.trial_period){
-  //     expires_on = new Date(starts_on.getFullYear(), starts_on.getMonth(), starts_on.getDate()+3)
-  // }
-
   const membership = new Membership({
     type: membershipType,
     description: description,

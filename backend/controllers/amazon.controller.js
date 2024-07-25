@@ -16,7 +16,6 @@ exports.findAll = async (req, res) => {
     const expired = req.expired;
     const membership = req.membership;
 
-    // Build the $match stage with all conditions
     const match = {};
 
     if (q && q != "") {
@@ -35,7 +34,6 @@ exports.findAll = async (req, res) => {
       match._productPrice = { $lte: Number(price.max) };
     }
 
-    // Add rank filtering based on the 'rank' parameter
     switch (rank) {
       case ">10":
         match._productOrdersRanking = { $lte: 10 };
@@ -63,10 +61,9 @@ exports.findAll = async (req, res) => {
       perPage = 32;
     }
 
-    // Combine all stages into a single aggregate pipeline
     const pipeline = [
-      { $match: match }, // Apply all filters at once
-      { $sort: { _id: -1 } }, // Sort before pagination
+      { $match: match },
+      { $sort: { _id: -1 } },
       {
         $facet: {
           metadata: [{ $count: "total" }],

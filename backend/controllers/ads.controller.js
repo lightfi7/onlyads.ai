@@ -1,10 +1,6 @@
 const db = require("../models");
-const fs = require("fs");
 const axios = require("axios");
-const { response } = require("express");
-const User = db.user;
 const Ads = db.ads;
-const Membership = db.membership;
 
 exports.findAll = async (req, res) => {
   let {
@@ -134,7 +130,7 @@ exports.findOne = async (req, res) => {
                     req.redis.set(req.params.id, JSON.stringify(data));
                     req.redis.expire(req.params.id, 3600 * 24);
                     Ads.findOneAndUpdate({ id: req.params.id }, data)
-                      .then((data) => {
+                      .then(() => {
                         console.log(";)");
                       })
                       .catch((err) => {
@@ -164,4 +160,4 @@ exports.findOne = async (req, res) => {
   }
 };
 
-exports.delete = (req, res) => {};
+exports.delete = () => {};

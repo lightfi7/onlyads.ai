@@ -1,7 +1,6 @@
 const db = require("../models");
 const User = db.user;
 
-// Retrieve all users from the database.
 exports.findAll = async (req, res) => {
   let total = await User.countDocuments({});
 
@@ -16,7 +15,6 @@ exports.findAll = async (req, res) => {
     });
 };
 
-// Find a single user with an id
 exports.findOne = (req, res) => {
   const id = req.body.id;
 
